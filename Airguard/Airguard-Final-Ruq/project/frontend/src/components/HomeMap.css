@@ -1,0 +1,16 @@
+.dark .leaflet-layer,
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out,
+.leaflet-control-attribution {
+  filter: invert(100%) hue-rotate(360deg) brightness(95%) contrast(80%);
+}
+.leaflet-container{
+
+    z-index: 1;
+    border-radius: 12px;
+}
+.custom-tooltip{
+    background-color: var(--surfacecolor);
+    color: var(--primarytext);
+    font-weight: bold;
+}

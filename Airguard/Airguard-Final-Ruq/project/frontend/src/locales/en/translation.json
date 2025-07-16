@@ -1,0 +1,215 @@
+{
+  "nav": {
+    "home": "Home",
+    "logs": "Logs",
+    "manage_alert": "Manage Alerts",
+    "report": "Report",
+    "profile": "Profile",
+    "logout": "Logout",
+    "login": "Login",
+    "about_air_quality": "About Air Quality",
+    "About_us": "About Us"
+  },
+  "language": {
+    "en": "English",
+    "ur": "Urdu",
+    "es": "Spanish"
+  },
+  "header": {
+    "title": "Air Quality Dashboard"
+  },
+  "greeting": "Hello, {{name}}!",
+  "search": {
+    "placeholder": "Search your zone (Zone 1, Zone 2, etc.)",
+    "button": "Search"
+  },
+  "error": {
+    "something_went_wrong": "Something went wrong.",
+    "unknown": "Unknown error",
+    "zone_not_found": "Zone not found. Please enter a valid zone (Zone 1, Zone 2, etc.).",
+    "no_token": "No authentication token found. Please log in.",
+    "profile_fetch_failed": "Failed to fetch user profile",
+    "aqi_data": "Failed to fetch air quality data",
+    "aqi_fetch_failed": "Failed to fetch air quality data",
+    "sensor_locations": "Failed to fetch sensor locations",
+    "historical_data_not_available": "Historical data not available for {{zone}}",
+    "historical_data_failed": "Failed to fetch historical data: {{message}}",
+    "cannot_connect_server": "Cannot connect to server. Make sure backend is running and try again.",
+    "failed_submit_report": "Failed to submit report",
+    "edit_own_reports": "You can only edit your own reports.",
+    "delete_own_reports": "You can only delete your own reports.",
+    "no_data_to_download": "No data available to download."
+  },
+  "category": {
+    "good": "Good",
+    "moderate": "Moderate",
+    "unhealthySensitive": "Unhealthy for Sensitive Groups",
+    "unhealthy": "Unhealthy",
+    "veryUnhealthy": "Very Unhealthy",
+    "hazardous": "Hazardous"
+  },
+  "recommendation": {
+    "good": "Air quality is good. Enjoy your day!",
+    "moderate": "Air quality is moderate. Sensitive individuals should reduce outdoor exertion.",
+    "unhealthy": "Air quality is unhealthy. Consider reducing prolonged outdoor activities.",
+    "dangerous": "Air quality is dangerously high. Limit outdoor activities and wear masks."
+  },
+  "last_updated": "Last updated: {{time}}",
+  "chart": {
+    "aqi": "AQI",
+    "aqi_trend": "AQI Trend (Last 24 Hours)",
+    "loading": "(Loading...)",
+    "no_data": "No historical data available."
+  },
+  "filters": {
+    "title": "Filter",
+    "date_label": "Select Date",
+    "zone_label": "Select Zone",
+    "time_range_label": "Time Range"
+  },
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "zone": {
+    "1": "Zone 1",
+    "2": "Zone 2",
+    "3": "Zone 3",
+    "4": "Zone 4",
+    "all": "All Zones"
+  },
+  "pollutants": {
+    "title": "Major Pollutants",
+    "loading": "Loading pollutant data...",
+    "no_data": "No pollutant data available",
+    "dominant": "Dominant",
+    "pm2_5": "PM2.5",
+    "pm10": "PM10",
+    "o3": "O3",
+    "no2": "NO2",
+    "so2": "SO2",
+    "co": "CO"
+  },
+  "weather": {
+    "temperature": "Temperature",
+    "humidity": "Humidity",
+    "wind_speed": "Wind Speed",
+    "pressure": "Pressure"
+  },
+  "section": {
+    "aqi_forecast": "AQI Forecast",
+    "heatmap": "Heatmap Chart",
+    "pollution_reports": "Pollution Reports",
+    "health_recommendations": "Health Recommendations",
+    "air_pollution_stats": "Air pollution has caused an estimated",
+    "deaths_pakistan": "Deaths each year in Pakistan",
+    "leaderboard": "Leaderboard"
+  },
+  "reports": {
+    "empty": "You haven't submitted any pollution reports yet.",
+    "report_now": "Report now!",
+    "pollution_type": "Pollution Type",
+    "date": "Date Reported",
+    "images": "Images",
+    "report_pollution": "Report Pollution",
+    "no_reports": "You haven't submitted any pollution reports yet.",
+    "your_reports": "Your Reported Pollution Cases",
+    "loading": "Loading reports...",
+    "none": "None"
+  },
+  "pollution_type": {
+    "air": "Air Pollution",
+    "water": "Water Pollution",
+    "soil": "Soil Pollution",
+    "industrial_emissions": "Industrial Emissions",
+    "vehicle_emissions": "Vehicle Emissions",
+    "construction_dust": "Construction Dust",
+    "burning_waste": "Burning Waste",
+    "indoor_air_quality": "Indoor Air Quality Issues",
+    "other": "Other"
+  },
+  "status": {
+    "verified": "Verified",
+    "rejected": "Rejected",
+    "pending": "Pending",
+    "pending_review": "Pending Review",
+    "loading": "Loading status..."
+  },
+  "description": "Description",
+  "location": "Location",
+  "health_recommendations": {
+    "loading": "Loading user profile..."
+  },
+  "retry": "Retry",
+  "days": {
+    "Sun": "Sunday",
+    "Mon": "Monday",
+    "Tue": "Tuesday",
+    "Wed": "Wednesday",
+    "Thu": "Thursday",
+    "Fri": "Friday",
+    "Sat": "Saturday"
+  },
+  "times": {
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening"
+  },
+  "historical_reports": {
+    "title": "Historical Air Quality Reports",
+    "no_data": "No historical data available for the selected filters.",
+    "loading": "Loading historical data...",
+    "initializing": "Initializing...",
+    "download_pdf": "Download PDF",
+    "last_24_hours": "Last 24 Hours",
+    "last_7_days": "Last 7 Days",
+    "all_data": "All Data",
+    "city_wide": "City-Wide Aggregation"
+  },
+  "manage_alert": {
+    "title": "Manage Alert",
+    "your_alerts": "Your Alerts",
+    "new_alert": "New Alert",
+    "alert_name": "Alert Name",
+    "location": "Location",
+    "pollutant": "Pollutant",
+    "threshold": "Threshold",
+    "status": "Status",
+    "created_at": "Created At",
+    "action": "Action",
+    "no_alerts": "No alerts found. Create your first alert using the 'New Alert' button."
+  },
+  "report_pollution": {
+    "title": "Report Pollution",
+    "edit_title": "Edit Pollution Report",
+    "description_label": "Description",
+    "location_label": "Location",
+    "pollution_type_label": "Pollution Type",
+    "custom_type_label": "Specify Pollution Type",
+    "upload_images": "Upload Images",
+    "submit_report": "Submit Report",
+    "update_report": "Update Report",
+    "your_reports": "Your Reported Pollution Cases",
+    "no_reports": "You haven't submitted any pollution reports yet.",
+    "select_location_map": "Select Location on Map",
+    "enter_location_manually": "Enter Location Manually",
+    "final_location": "Final Location",
+    "click_map_to_select": "Click on the map to select location",
+    "enter_location_above": "Enter location in the field above",
+    "loading_location_name": "Getting location name",
+    "location_name": "Location Name",
+    "description_placeholder": "Provide details of the pollution incident (e.g., thick black smoke from factory at noon).",
+    "location_placeholder": "Enter location description (e.g., Main Street, Downtown Area)",
+    "select_pollution_type": "Select Pollution Type",
+    "description_required": "Description is required",
+    "location_required": "Location is required",
+    "pollution_type_required": "Select pollution type",
+    "custom_type_required": "Specify pollution type",
+    "selected_location": "Selected: Lat: {{lat}}, Lon: {{lon}}",
+    "submit_success": "Report submitted successfully",
+    "update_success": "Report updated successfully",
+    "confirm_delete": "Are you sure you want to delete this report?"
+  },
+  "weather_conditions": {
+    "title": "Weather Conditions"
+  },
+  "dominant_pollutant": "Dominant Pollutant"
+}

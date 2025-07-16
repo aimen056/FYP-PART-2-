@@ -1,0 +1,23 @@
+{
+    "PM2.5": {
+      "description": "Fine particulate matter can penetrate deep into the lungs and affect heart and lung health.",
+      "recommendation": "Avoid outdoor activities, wear a protective mask, and use an air purifier indoors."
+    },
+    "PM10": {
+      "description": "Coarse particles can cause respiratory irritation.",
+      "recommendation": "Limit prolonged exposure outdoors if you have respiratory conditions."
+    },
+    "NO2": {
+      "description": "Nitrogen dioxide can irritate the airways and affect lung function.",
+      "recommendation": "Reduce exposure during heavy traffic hours and consider indoor air purification."
+    },
+    "O3": {
+      "description": "Ozone at ground level can cause respiratory issues and worsen asthma.",
+      "recommendation": "Avoid strenuous outdoor activities during high ozone periods."
+    },
+    "CO": {
+      "description": "Carbon monoxide can reduce oxygen delivery in the body and is particularly dangerous in high concentrations.",
+      "recommendation": "Ensure proper ventilation indoors and avoid areas with heavy traffic."
+    }
+  }
+  

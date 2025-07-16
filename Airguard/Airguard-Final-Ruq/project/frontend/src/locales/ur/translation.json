@@ -1,0 +1,212 @@
+{
+  "nav": {
+    "home": "ہوم",
+    "logs": "لاگز",
+    "manage_alert": "الرٹس کا انتظام",
+    "report": "رپورٹ",
+    "profile": "پروفائل",
+    "login": "لاگ ان",
+    "logout": "لاگ آوٹ",
+    "about_air_quality": "ہوا کے معیار کے بارے میں",
+    "About_us": "ہمارے بارے میں"
+  },
+  "language": {
+    "en": "انگریزی",
+    "ur": "اردو",
+    "es": "ہسپانوی"
+  },
+  "header": {
+    "title": "ایئر کوالٹی ڈیش بورڈ"
+  },
+  "greeting": "ہیلو، {{name}}!",
+  "search": {
+    "placeholder": "اپنا زون تلاش کریں (زون 1، زون 2، وغیرہ)",
+    "button": "تلاش"
+  },
+  "error": {
+    "something_went_wrong": "کچھ غلط ہو گیا۔",
+    "unknown": "نامعلوم خرابی",
+    "zone_not_found": "زون نہیں ملا۔ براہ کرم ایک درست زون درج کریں (زون 1، زون 2، وغیرہ)",
+    "no_token": "کوئی تصدیقی ٹوکن نہیں ملا۔ براہ کرم لاگ ان کریں۔",
+    "profile_fetch_failed": "صارف پروفائل حاصل کرنے میں ناکامی",
+    "aqi_data": "ہوا کے معیار کا ڈیٹا حاصل کرنے میں ناکامی",
+    "aqi_fetch_failed": "ہوا کے معیار کا ڈیٹا حاصل کرنے میں ناکامی",
+    "sensor_locations": "سینسر مقامات حاصل کرنے میں ناکامی",
+    "historical_data_not_available": "{{zone}} کے لیے تاریخی ڈیٹا دستیاب نہیں",
+    "historical_data_failed": "تاریخی ڈیٹا حاصل کرنے میں ناکامی: {{message}}",
+    "cannot_connect_server": "سرور سے رابطہ نہیں ہو سکا۔ یقینی بنائیں کہ بیک اینڈ چل رہا ہے اور دوبارہ کوشش کریں۔",
+    "failed_submit_report": "رپورٹ جمع کرنے میں ناکامی",
+    "edit_own_reports": "آپ صرف اپنی رپورٹس میں ترمیم کر سکتے ہیں۔",
+    "delete_own_reports": "آپ صرف اپنی رپورٹس حذف کر سکتے ہیں۔",
+    "no_data_to_download": "ڈاؤن لوڈ کے لیے کوئی ڈیٹا موجود نہیں۔"
+  },
+  "category": {
+    "good": "اچھا",
+    "moderate": "معتدل",
+    "unhealthySensitive": "حساس گروپس کے لیے مضر",
+    "unhealthy": "مضر",
+    "veryUnhealthy": "بہت مضر",
+    "hazardous": "خطرناک"
+  },
+  "recommendation": {
+    "good": "ہوا کا معیار اچھا ہے۔ اپنے دن سے لطف اٹھائیں!",
+    "moderate": "ہوا کا معیار معتدل ہے۔ حساس افراد کو باہری سرگرمیاں کم کرنی چاہئیں۔",
+    "unhealthy": "ہوا کا معیار مضر ہے۔ طویل باہری سرگرمیوں کو کم کرنے پر غور کریں۔",
+    "dangerous": "ہوا کا معیار خطرناک حد تک زیادہ ہے۔ باہری سرگرمیاں محدود کریں اور ماسک پہنیں۔"
+  },
+  "last_updated": "آخری اپ ڈیٹ: {{time}}",
+  "chart": {
+    "aqi": "AQI",
+    "aqi_trend": "AQI رجحان (آخری 24 گھنٹے)",
+    "loading": "(لوڈ ہو رہا ہے...)",
+    "no_data": "کوئی تاریخی ڈیٹا دستیاب نہیں۔"
+  },
+  "filters": {
+    "title": "فلٹر",
+    "date_label": "تاریخ منتخب کریں",
+    "zone_label": "زون منتخب کریں",
+    "time_range_label": "وقت کی حد"
+  },
+  "today": "آج",
+  "yesterday": "کل",
+  "zone": {
+    "1": "زون 1",
+    "2": "زون 2",
+    "3": "زون 3",
+    "4": "زون 4",
+    "all": "تمام زونز"
+  },
+  "pollutants": {
+    "title": "اہم آلودگیاں",
+    "loading": "آلودگی کا ڈیٹا لوڈ ہو رہا ہے...",
+    "no_data": "کوئی آلودگی کا ڈیٹا دستیاب نہیں",
+    "dominant": "غالب",
+    "pm2_5": "PM2.5",
+    "pm10": "PM10",
+    "o3": "O3",
+    "no2": "NO2",
+    "so2": "SO2",
+    "co": "CO"
+  },
+  "weather": {
+    "temperature": "درجہ حرارت",
+    "humidity": "نمی",
+    "wind_speed": "ہوا کی رفتار",
+    "pressure": "دباؤ"
+  },
+  "section": {
+    "aqi_forecast": "AQI پیشن گوئی",
+    "heatmap": "ہیٹ میپ چارٹ",
+    "pollution_reports": "آلودگی کی رپورٹس",
+    "health_recommendations": "صحت کے مشورے",
+    "air_pollution_stats": "ہوائی آلودگی نے اندازاً",
+    "deaths_pakistan": "ہر سال پاکستان میں اموات کا سبب بنی",
+    "leaderboard": "لیڈر بورڈ"
+  },
+  "reports": {
+    "empty": "آپ نے ابھی تک کوئی آلودگی کی رپورٹ جمع نہیں کی۔",
+    "report_now": "اب رپورٹ کریں!",
+    "pollution_type": "آلودگی کی قسم",
+    "date": "رپورٹ کی تاریخ",
+    "images": "تصاویر",
+    "report_pollution": "آلودگی کی رپورٹ کریں",
+    "no_reports": "آپ نے ابھی تک کوئی آلودگی کی رپورٹ جمع نہیں کی۔",
+    "your_reports": "آپ کی رپورٹ کردہ آلودگی کے کیسز",
+    "loading": "رپورٹس لوڈ ہو رہی ہیں...",
+    "none": "کوئی نہیں"
+  },
+  "pollution_type": {
+    "air": "ہوائی آلودگی",
+    "water": "پانی کی آلودگی",
+    "soil": "مٹی کی آلودگی",
+    "industrial_emissions": "صنعتي اخراج",
+    "vehicle_emissions": "گاڑیوں کے اخراج",
+    "construction_dust": "تعمیراتی دھول",
+    "burning_waste": "کچرا جلانا",
+    "indoor_air_quality": "اندرونی ہوا کے معیار کے مسائل",
+    "other": "دوسر"
+  },
+  "status": {
+    "verified": "تصدیق شدہ",
+    "rejected": "مسترد",
+    "pending_review": "جائزہ زیر التوا",
+    "loading": "حالت لوڈ ہو رہی ہے..."
+  },
+  "description": "تفصیل",
+  "location": "مقام",
+  "health_recommendations": {
+    "loading": "صارف پروفائل لوڈ ہو رہا ہے..."
+  },
+  "retry": "دوبارہ کوشش کریں",
+  "days": {
+    "Sun": "اتوار",
+    "Mon": "پیر",
+    "Tue": "منگل",
+    "Wed": "بدھ",
+    "Thu": "جمعرات",
+    "Fri": "جمعہ",
+    "Sat": "ہفتہ"
+  },
+  "times": {
+    "morning": "صبح",
+    "afternoon": "دوپہر",
+    "evening": "شام"
+  },
+  "historical_reports": {
+    "title": "تاریخی ہوا کے معیار کی رپورٹس",
+    "no_data": "منتخب کردہ فلٹرز کے لیے کوئی تاریخی ڈیٹا موجود نہیں۔",
+    "loading": "تاریخی ڈیٹا لوڈ ہو رہا ہے...",
+    "initializing": "ابتداء ہو رہی ہے...",
+    "download_pdf": "پی ڈی ایف ڈاؤن لوڈ کریں",
+    "last_24_hours": "آخری 24 گھنٹے",
+    "last_7_days": "آخری 7 دن",
+    "all_data": "تمام ڈیٹا"
+  },
+  "manage_alert": {
+    "title": "الرٹس کا انتظام",
+    "your_alerts": "آپ کے الرٹس",
+    "new_alert": "نیا الرٹ",
+    "alert_name": "الرٹ کا نام",
+    "location": "مقام",
+    "pollutant": "آلودگی",
+    "threshold": "حد",
+    "status": "حالت",
+    "created_at": "بنایا گیا",
+    "action": "عمل",
+    "no_alerts": "کوئی الرٹس موجود نہیں۔ 'نیا الرٹ' بٹن کا استعمال کرکے اپنا پہلا الرٹ بنائیں۔"
+  },
+  "report_pollution": {
+    "title": "آلودگی کی رپورٹ",
+    "description_label": "تفصیل",
+    "location_label": "مقام",
+    "pollution_type_label": "آلودگی کی قسم",
+    "custom_type_label": "آلودگی کی قسم کی وضاحت",
+    "upload_images": "تصاویر اپ لوڈ کریں",
+    "submit_report": "رپورٹ جمع کریں",
+    "update_report": "رپورٹ اپ ڈیٹ کریں",
+    "your_reports": "آپ کی رپورٹ کردہ آلودگی کے کیسز",
+    "no_reports": "آپ نے ابھی تک کوئی آلودگی کی رپورٹ جمع نہیں کی۔",
+    "select_location_map": "نقشے پر مقام منتخب کریں",
+    "enter_location_manually": "مقام دستی طور پر درج کریں",
+    "final_location": "حتمی مقام",
+    "click_map_to_select": "مقام منتخب کرنے کے لیے نقشے پر کلک کریں",
+    "enter_location_above": "اوپر والے فیلڈ میں مقام درج کریں",
+    "loading_location_name": "مقام کا نام حاصل کر رہا ہے",
+    "location_name": "مقام کا نام",
+    "description_placeholder": "آلودگی کے واقعے کی تفصیلات فراہم کریں (مثال کے طور پر، دوپہر کو فیکٹری سے گاڑھا سیاہ دھواں)۔",
+    "location_placeholder": "مقام کی تفصیل درج کریں (مثال کے طور پر، مین سٹریٹ، ڈاؤن ٹاؤن ایریا)",
+    "select_pollution_type": "آلودگی کی قسم منتخب کریں",
+    "description_required": "تفصیل درکار ہے",
+    "location_required": "مقام درکار ہے",
+    "pollution_type_required": "آلودگی کی قسم منتخب کریں",
+    "custom_type_required": "آلودگی کی قسم کی وضاحت کریں",
+    "selected_location": "منتخب کردہ: لطیف: {{lat}}، لمبائی: {{lon}}",
+    "submit_success": "رپورٹ کامیابی سے جمع ہو گئی",
+    "update_success": "رپورٹ کامیابی سے اپ ڈیٹ ہو گئی",
+    "confirm_delete": "کیا آپ واقعی اس رپورٹ کو حذف کرنا چاہتے ہیں؟"
+  },
+  "weather_conditions": {
+    "title": "موسمی حالات"
+  },
+  "dominant_pollutant": "غالب آلودگی"
+}

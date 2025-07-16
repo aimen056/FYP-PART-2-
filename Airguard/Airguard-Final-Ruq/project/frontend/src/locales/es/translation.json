@@ -1,0 +1,214 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "logs": "Registros",
+    "manage_alert": "Gestionar Alertas",
+    "report": "Reportar",
+    "profile": "Perfil",
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "about_air_quality": "Sobre la Calidad del Aire",
+    "About_us": "Sobre Nosotros"
+  },
+  "language": {
+    "en": "Inglés",
+    "ur": "Urdu",
+    "es": "Español"
+  },
+  "header": {
+    "title": "Panel de Calidad del Aire"
+  },
+  "greeting": "¡Hola, {{name}}!",
+  "search": {
+    "placeholder": "Busca tu zona (Zona 1, Zona 2, etc.)",
+    "button": "Buscar"
+  },
+  "error": {
+    "something_went_wrong": "Algo salió mal.",
+    "unknown": "Error desconocido",
+    "zone_not_found": "Zona no encontrada. Por favor, ingresa una zona válida (Zona 1, Zona 2, etc.).",
+    "no_token": "No se encontró un token de autenticación. Por favor, inicia sesión.",
+    "profile_fetch_failed": "Error al obtener el perfil de usuario",
+    "aqi_data": "Error al obtener datos de calidad del aire",
+    "aqi_fetch_failed": "Error al obtener datos de calidad del aire",
+    "sensor_locations": "Error al obtener ubicaciones de sensores",
+    "historical_data_not_available": "No hay datos históricos disponibles para {{zone}}",
+    "historical_data_failed": "Error al obtener datos históricos: {{message}}",
+    "cannot_connect_server": "No se puede conectar al servidor. Asegúrate de que el backend esté funcionando e inténtalo de nuevo.",
+    "failed_submit_report": "Error al enviar el reporte",
+    "edit_own_reports": "Solo puedes editar tus propios reportes.",
+    "delete_own_reports": "Solo puedes eliminar tus propios reportes.",
+    "no_data_to_download": "No hay datos disponibles para descargar."
+  },
+  "category": {
+    "good": "Bueno",
+    "moderate": "Moderado",
+    "unhealthySensitive": "No saludable para grupos sensibles",
+    "unhealthy": "No saludable",
+    "veryUnhealthy": "Muy no saludable",
+    "hazardous": "Peligroso"
+  },
+  "recommendation": {
+    "good": "La calidad del aire es buena. ¡Disfruta tu día!",
+    "moderate": "La calidad del aire es moderada. Las personas sensibles deben reducir el esfuerzo al aire libre.",
+    "unhealthy": "La calidad del aire es no saludable. Considera limitar actividades prolongadas al aire libre.",
+    "dangerous": "La calidad del aire es peligrosamente alta. Limita las actividades al aire libre y usa mascarillas."
+  },
+  "last_updated": "Última actualización: {{time}}",
+  "chart": {
+    "aqi": "AQI",
+    "aqi_trend": "Tendencia AQI (Últimas 24 horas)",
+    "loading": "(Cargando...)",
+    "no_data": "No hay datos históricos disponibles."
+  },
+  "filters": {
+    "title": "Filtrar",
+    "date_label": "Seleccionar Fecha",
+    "zone_label": "Seleccionar Zona",
+    "time_range_label": "Rango de Tiempo"
+  },
+  "today": "Hoy",
+  "yesterday": "Ayer",
+  "zone": {
+    "1": "Zona 1",
+    "2": "Zona 2",
+    "3": "Zona 3",
+    "4": "Zona 4",
+    "all": "Todas las Zonas"
+  },
+  "pollutants": {
+    "title": "Contaminantes Principales",
+    "loading": "Cargando datos de contaminantes...",
+    "no_data": "No hay datos de contaminantes disponibles",
+    "dominant": "Dominante",
+    "pm2_5": "PM2.5",
+    "pm10": "PM10",
+    "o3": "O3",
+    "no2": "NO2",
+    "so2": "SO2",
+    "co": "CO"
+  },
+  "weather": {
+    "temperature": "Temperatura",
+    "humidity": "Humedad",
+    "wind_speed": "Velocidad del Viento",
+    "pressure": "Presión"
+  },
+  "section": {
+    "aqi_forecast": "Pronóstico AQI",
+    "heatmap": "Gráfico de Mapa de Calor",
+    "pollution_reports": "Reportes de Contaminación",
+    "health_recommendations": "Recomendaciones de Salud",
+    "air_pollution_stats": "La contaminación del aire ha causado un estimado de",
+    "deaths_pakistan": "Muertes cada año en Pakistán",
+    "leaderboard": "Tabla de Posiciones"
+  },
+  "reports": {
+    "empty": "Aún no has enviado ningún reporte de contaminación.",
+    "report_now": "¡Reporta ahora!",
+    "pollution_type": "Tipo de Contaminación",
+    "date": "Fecha Reportada",
+    "images": "Imágenes",
+    "report_pollution": "Reportar Contaminación",
+    "no_reports": "Aún no has enviado ningún reporte de contaminación.",
+    "your_reports": "Tus Casos de Contaminación Reportados",
+    "loading": "Cargando reportes...",
+    "none": "Ninguno"
+  },
+  "pollution_type": {
+    "air": "Contaminación del Aire",
+    "water": "Contaminación del Agua",
+    "soil": "Contaminación del Suelo",
+    "industrial_emissions": "Emisiones Industriales",
+    "vehicle_emissions": "Emisiones de Vehículos",
+    "construction_dust": "Polvo de Construcción",
+    "burning_waste": "Quema de Residuos",
+    "indoor_air_quality": "Problemas de Calidad del Aire Interior",
+    "other": "Otro"
+  },
+  "status": {
+    "verified": "Verificado",
+    "rejected": "Rechazado",
+    "pending_review": "Pendiente de Revisión",
+    "loading": "Cargando estado..."
+  },
+  "description": "Descripción",
+  "location": "Ubicación",
+  "health_recommendations": {
+    "loading": "Cargando perfil de usuario..."
+  },
+  "retry": "Reintentar",
+  "days": {
+    "Sun": "Domingo",
+    "Mon": "Lunes",
+    "Tue": "Martes",
+    "Wed": "Miércoles",
+    "Thu": "Jueves",
+    "Fri": "Viernes",
+    "Sat": "Sábado"
+  },
+  "times": {
+    "morning": "Mañana",
+    "afternoon": "Tarde",
+    "evening": "Noche"
+  },
+  "historical_reports": {
+    "title": "Reportes Históricos de Calidad del Aire",
+    "no_data": "No hay datos históricos disponibles para los filtros seleccionados.",
+    "loading": "Cargando datos históricos...",
+    "initializing": "Inicializando...",
+    "download_pdf": "Descargar PDF",
+    "last_24_hours": "Últimas 24 horas",
+    "last_7_days": "Últimos 7 días",
+    "all_data": "Todos los datos",
+    "city_wide": "Agregación de toda la ciudad"
+  },
+  "manage_alert": {
+    "title": "Gestionar Alerta",
+    "your_alerts": "Tus Alertas",
+    "new_alert": "Nueva Alerta",
+    "alert_name": "Nombre de la Alerta",
+    "location": "Ubicación",
+    "pollutant": "Contaminante",
+    "threshold": "Umbral",
+    "status": "Estado",
+    "created_at": "Creado En",
+    "action": "Acción",
+    "no_alerts": "No se encontraron alertas. Crea tu primera alerta usando el botón 'Nueva Alerta'."
+  },
+  "report_pollution": {
+    "title": "Reportar Contaminación",
+    "edit_title": "Editar Reporte de Contaminación",
+    "description_label": "Descripción",
+    "location_label": "Ubicación",
+    "pollution_type_label": "Tipo de Contaminación",
+    "custom_type_label": "Especificar Tipo de Contaminación",
+    "upload_images": "Subir Imágenes",
+    "submit_report": "Enviar Reporte",
+    "update_report": "Actualizar Reporte",
+    "your_reports": "Tus Casos de Contaminación Reportados",
+    "no_reports": "Aún no has enviado ningún reporte de contaminación.",
+    "select_location_map": "Seleccionar Ubicación en el Mapa",
+    "enter_location_manually": "Ingresar Ubicación Manualmente",
+    "final_location": "Ubicación Final",
+    "click_map_to_select": "Haz clic en el mapa para seleccionar ubicación",
+    "enter_location_above": "Ingresa la ubicación en el campo de arriba",
+    "loading_location_name": "Obteniendo nombre de ubicación",
+    "location_name": "Nombre de Ubicación",
+    "description_placeholder": "Proporciona detalles del incidente de contaminación (ej., humo negro espeso de fábrica al mediodía).",
+    "location_placeholder": "Ingresa descripción de ubicación (ej., Calle Principal, Área del Centro)",
+    "select_pollution_type": "Seleccionar Tipo de Contaminación",
+    "description_required": "La descripción es requerida",
+    "location_required": "La ubicación es requerida",
+    "pollution_type_required": "Selecciona el tipo de contaminación",
+    "custom_type_required": "Especifica el tipo de contaminación",
+    "selected_location": "Seleccionado: Lat: {{lat}}, Lon: {{lon}}",
+    "submit_success": "Reporte enviado exitosamente",
+    "update_success": "Reporte actualizado exitosamente",
+    "confirm_delete": "¿Estás seguro de que deseas eliminar este reporte?"
+  },
+  "weather_conditions": {
+    "title": "Condiciones Climáticas"
+  },
+  "dominant_pollutant": "Contaminante Dominante"
+}

@@ -1,0 +1,14 @@
+.active-link {
+    border-radius: 2rem;
+    color: rgb(var(--primaryBtnText)); /* Use CSS variable */
+    background-color: rgb(var(--primaryBtnBg)); /* Use CSS variable */
+    padding: 0.3rem 1rem; /* Adjust values as needed for top-bottom and left-right padding */
+  
+  }
+  
+  .dark.active-link {
+    border-radius: 2rem;
+    padding: 0.3rem 1rem;
+    background-color: rgb(var(--primaryBtnText)); /* Use dark mode variable */
+    color: rgb(var(--primaryBtnBg)); /* Use dark mode variable */
+  }

@@ -24,7 +24,7 @@ const HistoricalReport = () => {
         startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
       }
 
-      const response = await axios.get("http://localhost:5002/api/aggregated", {
+      const response = await axios.get("https://airguard-f6mb.onrender.com/api/aggregated", {
         params: startDate ? { startDate: startDate.toISOString() } : {},
         timeout: 5000,
       });

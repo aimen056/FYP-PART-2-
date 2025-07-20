@@ -349,7 +349,7 @@ const UserDashboard = () => {
           setError(t("error.no_token"));
           return;
         }
-        const response = await axios.get("http://localhost:5002/api/user/profile", {
+        const response = await axios.get("https://airguard-f6mb.onrender.com/api/user/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

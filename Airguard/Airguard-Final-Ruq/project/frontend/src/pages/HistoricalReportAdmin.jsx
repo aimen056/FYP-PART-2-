@@ -24,7 +24,7 @@ const HistoricalReportAdmin = () => {
       }
 
       // Fetch data from the API
-      const response = await axios.get("http://localhost:5002/api/aggregated", {
+      const response = await axios.get("https://airguard-f6mb.onrender.com/api/aggregated", {
         params: startDate ? { startDate: startDate.toISOString() } : {},
         timeout: 5000,
       });

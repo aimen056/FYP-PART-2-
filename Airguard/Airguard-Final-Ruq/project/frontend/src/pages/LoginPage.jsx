@@ -64,7 +64,7 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5002/auth/login", {
+      const response = await fetch("https://airguard-f6mb.onrender.com/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -151,7 +151,7 @@ const LoginPage = () => {
 
   const registerUser = async () => {
     try {
-      const response = await fetch("http://localhost:5002/auth/register", {
+      const response = await fetch("https://airguard-f6mb.onrender.com/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -192,7 +192,7 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5002/auth/forgot-password", {
+      const response = await fetch("https://airguard-f6mb.onrender.com/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.email }),

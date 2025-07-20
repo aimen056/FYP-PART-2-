@@ -31,8 +31,8 @@ const FullscreenMapPage = () => {
     const fetchZoneData = async () => {
       try {
         const [aqiResponse, sensorResponse] = await Promise.all([
-          axios.get("http://localhost:5002/api/aggregated"),
-          axios.get("http://localhost:5002/api/sensor-locations"),
+          axios.get("https://airguard-f6mb.onrender.com/api/aggregated"),
+          axios.get("https://airguard-f6mb.onrender.com/api/sensor-locations"),
         ]);
 
         const latestAqiReadings = aqiResponse.data.reduce((acc, reading) => {

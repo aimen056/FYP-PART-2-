@@ -170,7 +170,7 @@ const ReportPollution = ({ isOpen, onClose, initialReportData, onReportSubmit, o
           images.forEach((image) => editFormData.append("images", image));
           
           response = await axios.put(
-          `https://airguard-backend.onrender.com/api/reports/${editingReport._id}`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/reports/${editingReport._id}`,
             editFormData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
@@ -191,7 +191,7 @@ const ReportPollution = ({ isOpen, onClose, initialReportData, onReportSubmit, o
           }
           
           response = await axios.put(
-            `https://airguard-backend.onrender.com/api/reports/${editingReport._id}`,
+            `${import.meta.env.VITE_BACKEND_URL}/api/reports/${editingReport._id}`,
             updateData,
             { headers: { "Content-Type": "application/json" } }
           );
@@ -214,7 +214,7 @@ const ReportPollution = ({ isOpen, onClose, initialReportData, onReportSubmit, o
         }
       } else {
         const response = await axios.post(
-          "https://airguard-backend.onrender.com/api/reports",
+          `${import.meta.env.VITE_BACKEND_URL}/api/reports`,
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );

@@ -82,9 +82,9 @@ const pollutionIcons = {
     const fetchZoneData = async () => {
       try {
         const [aqiResponse, sensorResponse, reportsResponse] = await Promise.all([
-          axios.get("https://airguard-f6mb.onrender.com/api/aggregated"),
-          axios.get("https://airguard-f6mb.onrender.com/api/sensor-locations"),
-          axios.get("https://airguard-f6mb.onrender.com/api/reports"),
+          axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/aggregated`),
+          axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/sensor-locations`),
+          axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/reports`),
         ]);
 
         console.log("Reports response:", reportsResponse.data); // Debug log

@@ -80,7 +80,7 @@ const AQIForecastChart = ({ selectedZone }) => {
       setError(null);
 
       const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-      const historicalResponse = await axios.get('https://airguard-f6mb.onrender.com/api/aggregated', {
+      const historicalResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/aggregated`, {
         params: { startDate: twentyFourHoursAgo.toISOString() },
         headers: { 'Content-Type': 'application/json' },
       });
@@ -99,11 +99,11 @@ const AQIForecastChart = ({ selectedZone }) => {
         }));
       }
 
-      await axios.post('https://airguard-f6mb.onrender.com/auth/forecast/train-models', { data: formattedData }, {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/forecast/train-models`, { data: formattedData }, {
         headers: { 'Content-Type': 'application/json' },
       });
 
-      const response = await axios.post('https://airguard-f6mb.onrender.com/auth/forecast', {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/forecast`, {
         zone: selectedZone,
         steps: 6,
         historical: {

@@ -187,7 +187,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchSensorLocations = async () => {
       try {
-        const response = await axios.get("https://airguard-f6mb.onrender.com/api/sensor-locations");
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/sensor-locations`);
         setSensorLocations(response.data);
 
         const formatted = response.data.map((sensor) => ({
@@ -211,7 +211,7 @@ const HomePage = () => {
     try {
       setLoading(true);
       setHistoricalError(null);
-      let endpoint = "https://airguard-f6mb.onrender.com/api/aggregated";
+      let endpoint = `${import.meta.env.VITE_BACKEND_URL}/api/aggregated`;
 
       const now = new Date();
       let startDate,
@@ -257,7 +257,7 @@ const HomePage = () => {
       setError(null);
 
       try {
-        const currentResponse = await axios.get(`https://airguard-f6mb.onrender.com/api/data/latest`);
+        const currentResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/data/latest`);
         const currentData = currentResponse.data;
 
         if (!currentData) {

@@ -63,7 +63,7 @@ const AdminDashboard = () => {
     setIsLoading((prev) => ({ ...prev, sensors: true }));
     setError(null);
     try {
-      const response = await axios.get("https://airguard-f6mb.onrender.com/api/sensor-locations");
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/sensor-locations`);
       setSensorLocations(response.data);
 
       const thresholds = {};
@@ -112,12 +112,12 @@ const AdminDashboard = () => {
 
       if (editingSensor) {
         await axios.put(
-          `https://airguard-f6mb.onrender.com/api/sensor-locations/${editingSensor._id}`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/sensor-locations/${editingSensor._id}`,
           newLocation
         );
         toast.success("Sensor updated successfully");
       } else {
-        await axios.post("https://airguard-f6mb.onrender.com/api/sensor-locations", newLocation);
+        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/sensor-locations`, newLocation);
         toast.success("Sensor added successfully");
       }
 
@@ -160,7 +160,7 @@ const AdminDashboard = () => {
     setError(null);
 
     try {
-      await axios.delete(`https://airguard-f6mb.onrender.com/api/sensor-locations/${sensorId}`);
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/sensor-locations/${sensorId}`);
       await fetchSensorLocations();
       toast.success("Sensor deleted successfully");
     } catch (error) {

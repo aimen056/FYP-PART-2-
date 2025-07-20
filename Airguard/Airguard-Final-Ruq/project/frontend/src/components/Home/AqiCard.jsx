@@ -43,7 +43,7 @@ const AqiCard = ({ selectedZone = "Unknown location" }) => {
     const fetchAQI = async () => {
       try {
         console.log('Fetching AQI data...');
-        const res = await axios.get("https://airguard-f6mb.onrender.com/api/aggregated");
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/aggregated`);
         
         // Find the most recent entry with an AQI value
         const latestWithAqi = res.data.find(item => item.aqi !== undefined);

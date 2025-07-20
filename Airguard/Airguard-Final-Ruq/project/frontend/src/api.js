@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://airguard-f6mb.onrender.com/api',
-
+  baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`,
 });
 
 export const getData = () => API.get('/');

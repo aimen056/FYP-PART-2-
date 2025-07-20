@@ -25,7 +25,7 @@ const EditProfile = () => {
           return;
         }
 
-        const response = await fetch("https://airguard-f6mb.onrender.com/api/user/profile", {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -94,7 +94,7 @@ const EditProfile = () => {
         return;
       }
 
-      const response = await fetch("https://airguard-f6mb.onrender.com/api/user/profile", {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const API_BASE_URL = "https://airguard-f6mb.onrender.com";
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 // Fetch all reports
 export const fetchReports = createAsyncThunk(

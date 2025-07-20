@@ -15,7 +15,7 @@ import HealthRecommendations from "../components/HealthRecommendations";
 import AQIForecastChart from "../components/AQIForecastChart";
 import Chatbot from "../components/Chatbot";
 import ReportPollution from "./ReportPollution";
-import Modal from "../components/Modal";
+
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component {
@@ -88,7 +88,7 @@ const UserDashboard = () => {
   const [error, setError] = useState(null);
   const [historicalError, setHistoricalError] = useState(null);
   const [currentReportIndex, setCurrentReportIndex] = useState(0);
-  const [expandedCard, setExpandedCard] = useState(null);
+  const [expandedCards, setExpandedCards] = useState(new Set());
 
   const gaugeChartRef = useRef(null);
   const trendChartRef = useRef(null);
@@ -660,6 +660,24 @@ const UserDashboard = () => {
     }
   };
 
+  const toggleCard = (cardType) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(cardType)) {
+        newSet.delete(cardType);
+      } else {
+        newSet.add(cardType);
+      }
+      return newSet;
+    });
+  };
+
+  // Compute highest AQI category for emergency alert
+  const highestAqiCategory = getAqiCategory(highestAQI);
+
+  // Debug: Log AQI and category
+  console.log("highestAQI", highestAQI, "category", highestAqiCategory);
+
   return (
     <ErrorBoundary t={t}>
       <motion.div
@@ -801,36 +819,37 @@ const UserDashboard = () => {
           className="floating-header py-4 px-6"
         >
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between">
-            <div className="flex items-center gap-3 mb-4 lg:mb-0">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-xl flex items-center justify-center">
-                <span className="text-xl">🌤️</span>
+            <div className="flex items-center gap-3 mb-2 lg:mb-0">
+              <div className="w-9 h-9 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-xl flex items-center justify-center">
+                <span className="text-lg">🌤️</span>
               </div>
-              <h1 className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-cyan-600 dark:from-purple-400 dark:to-cyan-400 bg-clip-text text-transparent">
+              <h1 className="text-base font-semibold bg-gradient-to-r from-purple-600 to-cyan-600 dark:from-purple-400 dark:to-cyan-400 bg-clip-text text-transparent">
                 {t("header.title")}
               </h1>
             </div>
               <motion.form
                 variants={fadeIn}
                 onSubmit={handleSearch}
-              className="flex items-center gap-3 w-full lg:w-auto"
+                className="flex items-center gap-3 w-full lg:w-auto"
               >
-              <div className="relative flex-1 lg:flex-none lg:w-80">
-                <input
-                  type="text"
-                  className="w-full px-4 py-3 bg-white/80 dark:bg-slate-800/50 border border-gray-300 dark:border-slate-600 rounded-xl text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                  placeholder={t("search.placeholder")}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-gradient-to-r from-purple-500 to-cyan-500 text-white rounded-lg hover:from-purple-600 hover:to-cyan-600 transition-all"
-                  title={t("search.button")}
-                >
-                  <BsSearch className="h-4 w-4" />
-                </motion.button>
-              </div>
+                <div className="flex items-center w-full lg:w-80 gap-2">
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2 bg-white/80 dark:bg-slate-800/50 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    placeholder={t("search.placeholder")}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <motion.button
+                    type="submit"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="p-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors flex items-center justify-center shadow-md"
+                    title={t("search.button")}
+                  >
+                    <BsSearch className="h-5 w-5" />
+                  </motion.button>
+                </div>
               </motion.form>
           </div>
         </motion.header>
@@ -979,8 +998,8 @@ const UserDashboard = () => {
                   </motion.div>
 
             {/* Personalized Health Recommendations - Accordion Style */}
-            {userData && (
-              <motion.div variants={slideUp} className="modern-card p-4">
+            {userData && userData.wantsAlerts && (
+              <motion.div variants={slideUp} className="modern-card p-4 relative">
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                   <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                   Your Personalized Health Plan
@@ -993,11 +1012,28 @@ const UserDashboard = () => {
                 </div>
                   </div>
                 </h3>
-                
                 <div className="space-y-3">
-                  {/* Respiratory Health - Expandable */}
-                  <div className="health-card p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors" 
-                       onClick={() => setExpandedCard(expandedCard === 'respiratory' ? null : 'respiratory')}>
+                  {/* Only show sections based on userData.diseases, or all if none selected */}
+                  {((userData.diseases && userData.diseases.length === 0) || !userData.diseases) && (
+                    <div className="health-card p-3 text-gray-700 dark:text-slate-300">
+                      <p>No specific health conditions selected. Here are general recommendations for everyone:</p>
+                      <ul className="list-disc pl-5 mt-2 space-y-1">
+                        <li>Stay hydrated and maintain good indoor air circulation.</li>
+                        <li>Consider wearing a mask if air quality is poor.</li>
+                        <li>Monitor symptoms if you have respiratory or heart conditions.</li>
+                        <li>Limit outdoor activities during high pollution days.</li>
+                      </ul>
+                    </div>
+                  )}
+                  {userData.diseases && userData.diseases.includes('Respiratory conditions') && (
+                    <motion.div 
+                      className="health-card"
+                      initial={false}
+                    >
+                      <div 
+                        className="p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors"
+                        onClick={() => toggleCard('respiratory')}
+                      >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center">
@@ -1008,52 +1044,29 @@ const UserDashboard = () => {
                           <p className="text-gray-600 dark:text-slate-400 text-sm">Lung & breathing care</p>
                         </div>
                       </div>
-                      <svg className={`w-5 h-5 text-gray-500 transition-transform ${expandedCard === 'respiratory' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <motion.svg 
+                            className="w-5 h-5 text-gray-500" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                            animate={{ rotate: expandedCards.has('respiratory') ? 180 : 0 }}
+                            transition={{ duration: 0.3 }}
+                          >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                      </svg>
+                          </motion.svg>
                     </div>
-                                         {expandedCard === 'respiratory' && (
-                       <div className="mt-3 pt-3 border-t border-gray-200 dark:border-slate-600">
-                         <div className="text-gray-700 dark:text-slate-300 text-sm space-y-2">
-                           {highestAQI <= aqiCategories.good.max ? (
-                             <>
-                               <p>• ✅ Safe for all outdoor activities - enjoy fresh air</p>
-                               <p>• 💪 Continue regular breathing exercises and cardio</p>
-                               <p>• 🚴 Consider hiking, cycling, or swimming for lung fitness</p>
-                             </>
-                           ) : highestAQI <= aqiCategories.moderate.max ? (
-                             <>
-                               <p>• ⚠️ Limit strenuous outdoor exercise</p>
-                               <p>• 🏠 Use HEPA air purifiers indoors</p>
-                               <p>• 😷 Consider N95 masks in high-traffic areas</p>
-                             </>
-                           ) : highestAQI <= aqiCategories.unhealthy.max ? (
-                             <>
-                               <p>• 🚫 Avoid all outdoor activities and exercise</p>
-                               <p>• 🏠 Stay indoors with air purifiers</p>
-                               <p>• 📞 Monitor symptoms and contact doctor if needed</p>
-                               <div className="mt-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-                                 <p className="text-yellow-700 dark:text-yellow-300 font-semibold">⚠️ Sensitive groups: Avoid all outdoor activities</p>
                                </div>
-                             </>
-                           ) : (
-                             <>
-                               <p>• 🚫 Stay indoors completely - no outdoor exposure</p>
-                               <p>• 🤰 Pregnant women should avoid all outdoor activities</p>
-                               <p>• 📞 Monitor symptoms closely, seek medical help if needed</p>
-                               <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                                 <p className="text-red-700 dark:text-red-300 font-semibold">🚫 Emergency care needed for severe breathing difficulties</p>
-                               </div>
-                             </>
-                           )}
-                         </div>
-                       </div>
-                     )}
-                  </div>
-
-                  {/* Heart Health - Expandable */}
-                  <div className="health-card p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors"
-                       onClick={() => setExpandedCard(expandedCard === 'heart' ? null : 'heart')}>
+                    </motion.div>
+                  )}
+                  {userData.diseases && userData.diseases.includes('Cardiovascular disease') && (
+                    <motion.div 
+                      className="health-card"
+                      initial={false}
+                    >
+                      <div 
+                        className="p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors"
+                        onClick={() => toggleCard('heart')}
+                      >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 rounded-lg flex items-center justify-center">
@@ -1064,52 +1077,29 @@ const UserDashboard = () => {
                           <p className="text-gray-600 dark:text-slate-400 text-sm">Cardiovascular care</p>
                         </div>
                       </div>
-                      <svg className={`w-5 h-5 text-gray-500 transition-transform ${expandedCard === 'heart' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <motion.svg 
+                            className="w-5 h-5 text-gray-500" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                            animate={{ rotate: expandedCards.has('heart') ? 180 : 0 }}
+                            transition={{ duration: 0.3 }}
+                          >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                      </svg>
+                          </motion.svg>
                     </div>
-                                         {expandedCard === 'heart' && (
-                       <div className="mt-3 pt-3 border-t border-gray-200 dark:border-slate-600">
-                         <div className="text-gray-700 dark:text-slate-300 text-sm space-y-2">
-                           {highestAQI <= aqiCategories.good.max ? (
-                             <>
-                               <p>• ✅ Safe for all cardiovascular activities</p>
-                               <p>• 💪 Continue regular aerobic exercise</p>
-                               <p>• 📊 Monitor blood pressure weekly</p>
-                             </>
-                           ) : highestAQI <= aqiCategories.moderate.max ? (
-                             <>
-                               <p>• ⚠️ Monitor blood pressure more frequently</p>
-                               <p>• 🏠 Consider indoor exercise alternatives</p>
-                               <p>• 💧 Stay well-hydrated</p>
-                             </>
-                           ) : highestAQI <= aqiCategories.unhealthy.max ? (
-                             <>
-                               <p>• 🚫 Avoid all outdoor exercise</p>
-                               <p>• 📊 Monitor blood pressure daily</p>
-                               <p>• 🏥 Watch for chest pain or irregular heartbeat</p>
-                               <div className="mt-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-                                 <p className="text-yellow-700 dark:text-yellow-300 font-semibold">⚠️ Heart conditions: Avoid all outdoor activities</p>
                                </div>
-                             </>
-                           ) : (
-                             <>
-                               <p>• 🚫 Stay indoors completely</p>
-                               <p>• 📊 Monitor blood pressure multiple times daily</p>
-                               <p>• 🚨 Watch for heart attack symptoms</p>
-                               <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                                 <p className="text-red-700 dark:text-red-300 font-semibold">🚫 High risk for heart complications - seek immediate medical attention</p>
-                               </div>
-                             </>
-                           )}
-                         </div>
-                       </div>
-                     )}
-                  </div>
-
-                  {/* Chronic Conditions - Expandable */}
-                  <div className="health-card p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors"
-                       onClick={() => setExpandedCard(expandedCard === 'chronic' ? null : 'chronic')}>
+                    </motion.div>
+                  )}
+                  {userData.diseases && userData.diseases.includes('Chronic Diseases & Other Conditions') && (
+                    <motion.div 
+                      className="health-card"
+                      initial={false}
+                    >
+                      <div 
+                        className="p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors"
+                        onClick={() => toggleCard('chronic')}
+                      >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
@@ -1120,147 +1110,198 @@ const UserDashboard = () => {
                           <p className="text-gray-600 dark:text-slate-400 text-sm">Diabetes, inflammation & more</p>
                         </div>
                       </div>
-                      <svg className={`w-5 h-5 text-gray-500 transition-transform ${expandedCard === 'chronic' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <motion.svg 
+                            className="w-5 h-5 text-gray-500" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                            animate={{ rotate: expandedCards.has('chronic') ? 180 : 0 }}
+                            transition={{ duration: 0.3 }}
+                          >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                      </svg>
+                          </motion.svg>
                     </div>
-                                         {expandedCard === 'chronic' && (
-                       <div className="mt-3 pt-3 border-t border-gray-200 dark:border-slate-600">
-                         <div className="text-gray-700 dark:text-slate-300 text-sm space-y-2">
-                           {highestAQI <= aqiCategories.good.max ? (
-                             <>
-                               <p>• ✅ Continue normal monitoring routines</p>
-                               <p>• 🥗 Maintain healthy diet and medications</p>
-                               <p>• 💪 Engage in moderate exercise</p>
-                             </>
-                           ) : highestAQI <= aqiCategories.moderate.max ? (
-                             <>
-                               <p>• 📊 Monitor conditions more closely</p>
-                               <p>• 🥗 Increase anti-inflammatory foods</p>
-                               <p>• 💧 Stay well-hydrated</p>
-                             </>
-                           ) : highestAQI <= aqiCategories.unhealthy.max ? (
-                             <>
-                               <p>• 📊 Increase monitoring frequency</p>
-                               <p>• 🏠 Stay indoors with air purifiers</p>
-                               <p>• 💊 Consider adjusting medications under medical supervision</p>
-                               <div className="mt-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-                                 <p className="text-yellow-700 dark:text-yellow-300 font-semibold">⚠️ High pollution can worsen chronic conditions</p>
                                </div>
-                             </>
-                           ) : (
-                             <>
-                               <p>• 📊 Monitor conditions multiple times daily</p>
-                               <p>• 🏠 Stay completely indoors</p>
-                               <p>• 🚨 Contact healthcare providers if symptoms worsen</p>
-                               <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                                 <p className="text-red-700 dark:text-red-300 font-semibold">🚫 Severe pollution can cause dangerous complications</p>
-                               </div>
-                             </>
-                           )}
-                         </div>
-                       </div>
+                    </motion.div>
                      )}
                   </div>
 
-                  {/* Pregnancy & Children - Expandable */}
-                  <div className="health-card p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors"
-                       onClick={() => setExpandedCard(expandedCard === 'pregnancy' ? null : 'pregnancy')}>
-                    <div className="flex items-center justify-between">
+                {/* Modal overlays positioned relative to the parent card */}
+                {expandedCards.has('respiratory') && (
+                  <div className="absolute inset-0 z-[999999] flex items-center justify-center bg-black/20 rounded-xl">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.2 }}
+                      className="bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-800 rounded-xl shadow-2xl max-w-md w-full mx-4"
+                      style={{ maxHeight: '80vh', overflowY: 'auto' }}
+                    >
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                              <span className="text-white text-sm">🫁</span>
+                            </div>
+                            <div>
+                              <h4 className="text-gray-800 dark:text-white font-semibold">Respiratory Health</h4>
+                              <p className="text-gray-600 dark:text-slate-400 text-sm">Asthma, COPD & more</p>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => toggleCard('respiratory')}
+                            className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-300 text-2xl font-bold"
+                          >
+                            &times;
+                          </button>
+                        </div>
+                        {/* AQI health info for respiratory */}
+                        <div className="mb-3 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-900 dark:text-blue-200 text-sm font-medium">
+                          {(() => {
+                            const cat = getAqiCategory(highestAQI);
+                            if (cat === 'good') return 'Air quality is excellent. No impact on respiratory health. Enjoy outdoor activities! (EPA/WHO)';
+                            if (cat === 'moderate') return 'Air quality is acceptable. If you have asthma or lung disease, consider reducing prolonged outdoor exertion. (EPA/WHO)';
+                            if (cat === 'unhealthySensitive') return 'People with asthma or lung disease: Limit outdoor activity, avoid heavy exercise, and monitor for symptoms. (EPA/WHO)';
+                            if (cat === 'unhealthy') return 'Increased risk of symptoms for those with lung disease. Avoid outdoor exertion, stay indoors, and monitor your health. (EPA/WHO)';
+                            if (cat === 'veryUnhealthy') return 'Serious risk: Everyone, especially those with lung disease, should avoid all outdoor activity. Remain indoors and seek care if symptoms worsen. (EPA/WHO)';
+                            return 'Emergency: Dangerous air for respiratory health. Remain indoors, keep activity low, and seek immediate medical help if you have symptoms. (EPA/WHO)';
+                          })()}
+                        </div>
+                         <div className="text-gray-700 dark:text-slate-300 text-sm space-y-2">
+                          <p>• Use inhalers as prescribed during high AQI.</p>
+                          <p>• Avoid outdoor exercise if air is poor.</p>
+                          <p>• See a doctor if breathing worsens.</p>
+                          <div className="mt-4 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+                            <h5 className="font-semibold text-orange-800 dark:text-orange-200 mb-2">What's Affected:</h5>
+                            <ul className="space-y-1 text-sm">
+                              <li>Asthma attacks</li>
+                              <li>COPD flare-ups</li>
+                              <li>Bronchitis</li>
+                              <li>Shortness of breath</li>
+                            </ul>
+                               </div>
+                               </div>
+                         </div>
+                    </motion.div>
+                       </div>
+                     )}
+
+                {expandedCards.has('heart') && (
+                  <div className="absolute inset-0 z-[999999] flex items-center justify-center bg-black/20 rounded-xl">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.2 }}
+                      className="bg-white dark:bg-slate-900 border border-red-200 dark:border-red-800 rounded-xl shadow-2xl max-w-md w-full mx-4"
+                      style={{ maxHeight: '80vh', overflowY: 'auto' }}
+                    >
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg flex items-center justify-center">
-                          <span className="text-white text-sm">🤱</span>
+                            <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 rounded-lg flex items-center justify-center">
+                              <span className="text-white text-sm">❤️</span>
                         </div>
                         <div>
-                          <h4 className="text-gray-800 dark:text-white font-semibold">Pregnancy & Children</h4>
-                          <p className="text-gray-600 dark:text-slate-400 text-sm">Special care for vulnerable groups</p>
+                              <h4 className="text-gray-800 dark:text-white font-semibold">Heart Health</h4>
+                              <p className="text-gray-600 dark:text-slate-400 text-sm">Heart disease & more</p>
                         </div>
                       </div>
-                      <svg className={`w-5 h-5 text-gray-500 transition-transform ${expandedCard === 'pregnancy' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                      </svg>
+                          <button
+                            onClick={() => toggleCard('heart')}
+                            className="text-gray-400 hover:text-red-600 dark:hover:text-red-300 text-2xl font-bold"
+                          >
+                            &times;
+                          </button>
                     </div>
-                                         {expandedCard === 'pregnancy' && (
-                       <div className="mt-3 pt-3 border-t border-gray-200 dark:border-slate-600">
+                        {/* AQI health info for heart */}
+                        <div className="mb-3 p-3 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-900 dark:text-red-200 text-sm font-medium">
+                          {(() => {
+                            const cat = getAqiCategory(highestAQI);
+                            if (cat === 'good') return 'Air quality is excellent. No impact on heart health. Enjoy outdoor activities! (EPA/WHO)';
+                            if (cat === 'moderate') return 'Air quality is acceptable. If you have heart disease, consider reducing prolonged or heavy exertion outdoors. (EPA/WHO)';
+                            if (cat === 'unhealthySensitive') return 'People with heart disease: Limit outdoor activity, avoid strenuous exercise, and monitor for chest pain or palpitations. (EPA/WHO)';
+                            if (cat === 'unhealthy') return 'Increased risk of heart symptoms for those with heart disease. Avoid outdoor exertion, stay indoors, and monitor your condition. (EPA/WHO)';
+                            if (cat === 'veryUnhealthy') return 'Serious risk: Everyone, especially those with heart disease, should avoid all outdoor activity. Remain indoors and seek care if symptoms worsen. (EPA/WHO)';
+                            return 'Emergency: Dangerous air for heart health. Remain indoors, keep activity low, and seek immediate medical help if you have symptoms. (EPA/WHO)';
+                          })()}
+                        </div>
                          <div className="text-gray-700 dark:text-slate-300 text-sm space-y-2">
-                           {highestAQI <= aqiCategories.good.max ? (
-                             <>
-                               <p>• ✅ Safe for outdoor activities</p>
-                               <p>• 👶 Children can play outdoors normally</p>
-                               <p>• 🤰 Pregnant women can exercise safely</p>
-                             </>
-                           ) : highestAQI <= aqiCategories.moderate.max ? (
-                             <>
-                               <p>• ⚠️ Limit outdoor activities during peak hours</p>
-                               <p>• 🏠 Use HEPA air purifiers in children's rooms</p>
-                               <p>• 🚗 Avoid high-traffic areas</p>
-                             </>
-                           ) : highestAQI <= aqiCategories.unhealthy.max ? (
-                             <>
-                               <p>• 🚫 Keep children indoors completely</p>
-                               <p>• 🤰 Pregnant women avoid all outdoor activities</p>
-                               <p>• 📞 Monitor symptoms and contact doctors</p>
-                               <div className="mt-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-                                 <p className="text-yellow-700 dark:text-yellow-300 font-semibold">⚠️ Keep children indoors and pregnant women should avoid outdoor activities</p>
+                          <p>• Monitor blood pressure more often during high AQI.</p>
+                          <p>• Avoid strenuous outdoor activities.</p>
+                          <p>• Seek care if chest pain or palpitations occur.</p>
+                          <div className="mt-4 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+                            <h5 className="font-semibold text-orange-800 dark:text-orange-200 mb-2">What's Affected:</h5>
+                            <ul className="space-y-1 text-sm">
+                              <li>Heart attacks</li>
+                              <li>Arrhythmias</li>
+                              <li>Chest pain</li>
+                              <li>High blood pressure</li>
+                            </ul>
                                </div>
-                             </>
-                           ) : (
-                             <>
-                               <p>• 🚫 Absolutely no outdoor exposure for children</p>
-                               <p>• 🤰 Pregnant women stay completely indoors</p>
-                               <p>• 🚨 Seek immediate medical attention for any symptoms</p>
-                               <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                                 <p className="text-red-700 dark:text-red-300 font-semibold">🚫 Severe risk for pregnancy complications and child health</p>
                                </div>
-                             </>
-                           )}
                          </div>
+                    </motion.div>
                        </div>
                      )}
-                  </div>
 
-                  {/* Special Care - Conditional Expandable */}
-                  {(userData.age < 18 || userData.age > 65 || userData.medicalConditions?.length > 0) && (
-                    <div className="health-card p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors"
-                         onClick={() => setExpandedCard(expandedCard === 'special' ? null : 'special')}>
-                      <div className="flex items-center justify-between">
+                {expandedCards.has('chronic') && (
+                  <div className="absolute inset-0 z-[999999] flex items-center justify-center bg-black/20 rounded-xl">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.2 }}
+                      className="bg-white dark:bg-slate-900 border border-orange-200 dark:border-orange-800 rounded-xl shadow-2xl max-w-md w-full mx-4"
+                      style={{ maxHeight: '80vh', overflowY: 'auto' }}
+                    >
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
-                            <span className="text-white text-sm">👥</span>
+                            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                              <span className="text-white text-sm">🏥</span>
                           </div>
                           <div>
-                            <h4 className="text-gray-800 dark:text-white font-semibold">Special Care</h4>
-                            <p className="text-gray-600 dark:text-slate-400 text-sm">Extra precautions needed</p>
+                              <h4 className="text-gray-800 dark:text-white font-semibold">Chronic Conditions</h4>
+                              <p className="text-gray-600 dark:text-slate-400 text-sm">Diabetes, inflammation & more</p>
                           </div>
                         </div>
-                        <svg className={`w-5 h-5 text-gray-500 transition-transform ${expandedCard === 'special' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                        </svg>
+                          <button
+                            onClick={() => toggleCard('chronic')}
+                            className="text-gray-400 hover:text-orange-600 dark:hover:text-orange-300 text-2xl font-bold"
+                          >
+                            &times;
+                          </button>
                       </div>
-                      {expandedCard === 'special' && (
-                        <div className="mt-3 pt-3 border-t border-gray-200 dark:border-slate-600">
+                        {/* AQI health info for chronic */}
+                        <div className="mb-3 p-3 rounded-lg bg-orange-50 dark:bg-orange-900/30 text-orange-900 dark:text-orange-200 text-sm font-medium">
+                          {(() => {
+                            const cat = getAqiCategory(highestAQI);
+                            if (cat === 'good') return 'Air quality is excellent. No impact on chronic conditions. Enjoy outdoor activities! (EPA/WHO)';
+                            if (cat === 'moderate') return 'Air quality is acceptable. If you have diabetes or other chronic conditions, consider reducing prolonged outdoor exertion. (EPA/WHO)';
+                            if (cat === 'unhealthySensitive') return 'People with chronic conditions: Limit outdoor activity, avoid heavy exercise, and monitor for symptoms. (EPA/WHO)';
+                            if (cat === 'unhealthy') return 'Increased risk of symptoms for those with chronic conditions. Avoid outdoor exertion, stay indoors, and monitor your health. (EPA/WHO)';
+                            if (cat === 'veryUnhealthy') return 'Serious risk: Everyone, especially those with chronic conditions, should avoid all outdoor activity. Remain indoors and seek care if symptoms worsen. (EPA/WHO)';
+                            return 'Emergency: Dangerous air for chronic conditions. Remain indoors, keep activity low, and seek immediate medical help if you have symptoms. (EPA/WHO)';
+                          })()}
+                        </div>
                           <div className="text-gray-700 dark:text-slate-300 text-sm space-y-2">
-                            {userData.age < 18 && <p>• 👶 Children: Limit outdoor play time</p>}
-                            {userData.age > 65 && <p>• 👴 Seniors: Extra monitoring of symptoms</p>}
-                            {userData.medicalConditions?.includes('asthma') && (
-                              <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                                <p className="text-red-700 dark:text-red-300 font-semibold">⚠️ Asthma: Keep rescue inhaler handy</p>
+                          <p>• Monitor your condition more closely during high AQI days.</p>
+                          <p>• Stay indoors and use air purifiers if possible.</p>
+                          <p>• Contact your healthcare provider if symptoms worsen.</p>
+                          
+                          <div className="mt-4 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+                            <h5 className="font-semibold text-orange-800 dark:text-orange-200 mb-2">Chronic Conditions Affected:</h5>
+                            <ul className="space-y-1 text-sm">
+                              <li><strong>Diabetes:</strong> Worsens blood sugar control</li>
+                              <li><strong>Autoimmune:</strong> Lupus, arthritis, MS flare-ups</li>
+                              <li><strong>Kidney/Liver:</strong> Function decline</li>
+                              <li><strong>Mental Health:</strong> Depression, anxiety</li>
+                              <li><strong>IBD:</strong> Crohn's, colitis symptoms</li>
+                            </ul>
                               </div>
-                            )}
-                            {userData.medicalConditions?.includes('heart') && (
-                              <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                                <p className="text-red-700 dark:text-red-300 font-semibold">⚠️ Heart condition: Monitor symptoms closely</p>
                               </div>
-                            )}
-                            {userData.medicalConditions?.includes('diabetes') && (
-                              <p>• 💉 Diabetes: Monitor blood sugar more frequently</p>
-                            )}
                           </div>
+                    </motion.div>
                         </div>
                       )}
-                    </div>
-                  )}
-              </div>
             </motion.div>
             )}
 
@@ -1297,46 +1338,52 @@ const UserDashboard = () => {
                   ))
                 ) : aqiData ? (
                   <>
-                    <div className={`pollutant-item ${dominantPollutant === "pm2_5" ? "dominant-pollutant" : ""}`}>
-                      <div className="text-2xl mb-2">🌫️</div>
-                      <div className="text-sm text-gray-600 dark:text-slate-400">PM2.5</div>
-                      <div className="text-xl font-bold text-gray-800 dark:text-white">{aqiData.pollutants.pm2_5?.value || "N/A"}</div>
-                      <div className="text-xs text-gray-500 dark:text-slate-400 mt-1">Fine particles</div>
+                    {[
+                      { key: "pm2_5", icon: "🌫️", label: "PM2.5" },
+                      { key: "pm10", icon: "💨", label: "PM10" },
+                      { key: "o3", icon: "☁️", label: "O₃" },
+                      { key: "co", icon: "🚗", label: "CO" },
+                      { key: "no2", icon: "🏭", label: "NO₂" },
+                      { key: "so2", icon: "⚡", label: "SO₂" },
+                    ].map(({ key, icon, label }) => {
+                      if (!aqiData.pollutants[key]) return null;
+                      const aqi = aqiData.pollutants[key]?.aqi ?? null;
+                      const category = aqi !== null ? getAqiCategory(aqi) : null;
+                      // Define pastel background colors for each category
+                      const pastelCategoryBg = {
+                        good: '#d1fae5', // emerald-100
+                        moderate: '#fef9c3', // yellow-100
+                        unhealthySensitive: '#fde68a', // orange-100
+                        unhealthy: '#fecaca', // red-100
+                        veryUnhealthy: '#f3e8ff', // purple-100
+                        hazardous: '#fee2e2', // rose-100
+                      };
+                      const tooltipBg = category ? pastelCategoryBg[category] : '#f3f4f6';
+                      return (
+                        <div
+                          key={key}
+                          className={`pollutant-item ${dominantPollutant === key ? "dominant-pollutant" : ""} group relative`}
+                        >
+                          <div className="text-2xl mb-2">{icon}</div>
+                          <div className="text-sm text-gray-600 dark:text-slate-400">{label}</div>
+                          <div className="text-xl font-bold text-gray-800 dark:text-white">{aqi !== null ? aqi : "N/A"}</div>
+                          <div className="text-xs text-gray-500 dark:text-slate-400 mt-1">AQI</div>
+                          {/* Tooltip */}
+                          <div
+                            className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3 text-xs text-gray-700 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+                            style={{ background: tooltipBg }}
+                          >
+                            <div className="mb-1">
+                              <span className="font-semibold">Category: </span>
+                              <span>{category ? categoryLabels[category] : "N/A"}</span>
                     </div>
-                    <div className={`pollutant-item ${dominantPollutant === "pm10" ? "dominant-pollutant" : ""}`}>
-                      <div className="text-2xl mb-2">💨</div>
-                      <div className="text-sm text-gray-600 dark:text-slate-400">PM10</div>
-                      <div className="text-xl font-bold text-gray-800 dark:text-white">{aqiData.pollutants.pm10?.value || "N/A"}</div>
-                      <div className="text-xs text-gray-500 dark:text-slate-400 mt-1">Coarse particles</div>
+                            <div>
+                              {pollutantHealthImpacts[key]}
                     </div>
-                    <div className={`pollutant-item ${dominantPollutant === "o3" ? "dominant-pollutant" : ""}`}>
-                      <div className="text-2xl mb-2">☁️</div>
-                      <div className="text-sm text-gray-600 dark:text-slate-400">O₃</div>
-                      <div className="text-xl font-bold text-gray-800 dark:text-white">{aqiData.pollutants.o3?.value || "N/A"}</div>
-                      <div className="text-xs text-gray-500 dark:text-slate-400 mt-1">Ground-level ozone</div>
                     </div>
-                    <div className={`pollutant-item ${dominantPollutant === "co" ? "dominant-pollutant" : ""}`}>
-                      <div className="text-2xl mb-2">🚗</div>
-                      <div className="text-sm text-gray-600 dark:text-slate-400">CO</div>
-                      <div className="text-xl font-bold text-gray-800 dark:text-white">{aqiData.pollutants.co?.value || "N/A"}</div>
-                      <div className="text-xs text-gray-500 dark:text-slate-400 mt-1">Carbon monoxide</div>
                     </div>
-                    {aqiData.pollutants.no2 && (
-                      <div className={`pollutant-item ${dominantPollutant === "no2" ? "dominant-pollutant" : ""}`}>
-                        <div className="text-2xl mb-2">🏭</div>
-                        <div className="text-sm text-gray-600 dark:text-slate-400">NO₂</div>
-                        <div className="text-xl font-bold text-gray-800 dark:text-white">{aqiData.pollutants.no2?.value || "N/A"}</div>
-                        <div className="text-xs text-gray-500 dark:text-slate-400 mt-1">Nitrogen dioxide</div>
-                      </div>
-                    )}
-                    {aqiData.pollutants.so2 && (
-                      <div className={`pollutant-item ${dominantPollutant === "so2" ? "dominant-pollutant" : ""}`}>
-                        <div className="text-2xl mb-2">⚡</div>
-                        <div className="text-sm text-gray-600 dark:text-slate-400">SO₂</div>
-                        <div className="text-xl font-bold text-gray-800 dark:text-white">{aqiData.pollutants.so2?.value || "N/A"}</div>
-                        <div className="text-xs text-gray-500 dark:text-slate-400 mt-1">Sulfur dioxide</div>
-                      </div>
-                    )}
+                      );
+                    })}
                   </>
                 ) : (
                   <p className="text-gray-500 dark:text-slate-400 col-span-full text-center">{t("pollutants.no_data")}</p>
@@ -1437,7 +1484,10 @@ const UserDashboard = () => {
             </motion.div>
 
             {/* Heatmap - 2 Column Grid */}
-            <motion.div variants={slideUp} className="modern-card p-4 col-span-2">
+            <motion.div
+              variants={slideUp}
+              className={`modern-card p-4 ${userData && userData.wantsAlerts ? 'col-span-2' : 'col-span-3'}`}
+            >
               <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
                 <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
                   {t("section.heatmap")}

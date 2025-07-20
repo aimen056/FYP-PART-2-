@@ -262,6 +262,10 @@ const AdminDashboard = () => {
   const archivedReports = pollutionReports.filter((report) => report.archived);
   const activeReports = pollutionReports.filter((report) => !report.archived);
 
+  // Compute highest AQI among all sensors
+  const highestAQI = sensorLocations.reduce((max, loc) => Math.max(max, loc.aqi || 0), 0);
+  const highestAqiCategory = getAqiCategory(highestAQI);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 pt-16">
       <header className="bg-white dark:bg-gray-800 py-4 border-b border-gray-200 dark:border-gray-700">
@@ -276,11 +280,18 @@ const AdminDashboard = () => {
                   {error}
                 </div>
               )}
-             
             </div>
           </div>
         </div>
       </header>
+
+      {/* Emergency AQI Alert Banner */}
+      {(highestAqiCategory === "veryUnhealthy" || highestAqiCategory === "hazardous") && (
+        <div className="w-full bg-gradient-to-r from-red-600 to-orange-500 text-white py-3 px-4 flex items-center justify-center text-center text-lg font-bold shadow-md z-50">
+          <span className="mr-3 text-2xl">⚠️</span>
+          Emergency: Air quality is {highestAqiCategory === "hazardous" ? "hazardous" : "very unhealthy"}. Avoid all outdoor activity and stay indoors!
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 mt-6 pb-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

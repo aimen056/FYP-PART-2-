@@ -14,7 +14,7 @@ app.use(express.json());
 
 // MongoDB Connection
 mongoose
-  .connect('mongodb://127.0.0.1:27017/airguard', {
+  .connect('mongodb+srv://ummeaimen35:Ace11rsa22*@airguard.2akdos1.mongodb.net/airguard', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

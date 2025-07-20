@@ -30,7 +30,7 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('/auth/chatbot', { message: userMessage });
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/chatbot`, { message: userMessage });
       if (response.data.message) {
         addMessage('bot', response.data.message);
       } else {

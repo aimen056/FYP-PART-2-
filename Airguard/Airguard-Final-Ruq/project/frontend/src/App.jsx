@@ -71,6 +71,8 @@ function Layout({ children, isAuthenticated, userRole }) {
     return <Navigate to="/login" replace />;
   }
 
+  
+
   if (isAuthenticated && location.pathname === "/login") {
     return <Navigate to={userRole === "admin" ? "/dashboard" : "/userdashboard"} replace />;
   }

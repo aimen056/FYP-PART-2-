@@ -462,7 +462,7 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Archive Section */}
+          {/* Archive Section (commented out)
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-600 overflow-hidden">
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
               <h2 className="text-xl font-semibold text-teal-600 dark:text-teal-500">
@@ -541,6 +541,7 @@ const AdminDashboard = () => {
               )}
             </div>
           </div>
+          */}
         </div>
 
         <div className="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-600 p-4">

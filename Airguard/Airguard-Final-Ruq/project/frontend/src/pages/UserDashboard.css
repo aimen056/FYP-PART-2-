@@ -263,3 +263,27 @@
     pointer-events: none;
     overflow: visible !important;
   }
+
+@media (min-width: 1025px) {
+  .modern-card,
+  .chart-container {
+    overflow: visible !important;
+    overflow-x: visible !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .dashboard-container {
+    overflow: visible !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .dashboard-container,
+  .modern-card,
+  .chart-container,
+  .health-card {
+    overflow: visible !important;
+    overflow-x: visible !important;
+  }
+}

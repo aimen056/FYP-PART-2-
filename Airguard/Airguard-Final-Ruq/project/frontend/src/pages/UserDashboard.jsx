@@ -813,19 +813,45 @@ const UserDashboard = () => {
               </h3>
 
               {/* Compact, dismissible alert banner if triggered */}
-              {triggeredAlert && triggeredAlert._id !== dismissedAlertId && (
-                <div className="mb-2 flex items-center gap-2 px-3 py-1.5 rounded bg-gradient-to-r from-red-500 to-orange-400 text-white shadow-md relative animate-pulse min-h-[36px]">
-                  <span className="text-lg">🚨</span>
-                  <span className="flex-1 text-xs font-medium truncate">
-                    Alert: <span className="font-semibold">{triggeredAlert.alertName}</span> triggered! AQI in <span className="font-semibold">{triggeredAlert.location}</span> is {triggeredAlert.aqiCondition === "greater" ? ">" : "<"} {triggeredAlert.aqiValue}. Take precautions.
-                  </span>
-                  <button
-                    onClick={() => setDismissedAlertId(triggeredAlert._id)}
-                    className="ml-1 text-white/80 hover:text-white text-base font-bold px-1 py-0 rounded focus:outline-none"
-                    title="Dismiss alert"
-                  >
-                    ×
-                  </button>
+              {alerts && alerts.filter(a => a.status).filter(a => {
+                // Only match for current zone/city
+                const matchesLocation = a.location === selectedZone || (userData?.city && a.location === userData.city);
+                if (!aqiData) return false;
+                const pollutantAqi = aqiData.pollutants?.[a.pollutantName?.toLowerCase()?.replace('.', '_')]?.aqi || aqiData.overallAQI;
+                if (a.aqiCondition === "greater") {
+                  return matchesLocation && pollutantAqi > a.aqiValue;
+                } else {
+                  return matchesLocation && pollutantAqi < a.aqiValue;
+                }
+              }).length > 0 && (
+                <div className="mb-2 flex flex-row flex-wrap gap-2">
+                  {alerts.filter(a => a.status).filter(a => {
+                    const matchesLocation = a.location === selectedZone || (userData?.city && a.location === userData.city);
+                    if (!aqiData) return false;
+                    const pollutantAqi = aqiData.pollutants?.[a.pollutantName?.toLowerCase()?.replace('.', '_')]?.aqi || aqiData.overallAQI;
+                    if (a.aqiCondition === "greater") {
+                      return matchesLocation && pollutantAqi > a.aqiValue;
+                    } else {
+                      return matchesLocation && pollutantAqi < a.aqiValue;
+                    }
+                  }).map(alert => (
+                    dismissedAlertId === alert._id ? null : (
+                      <div key={alert._id} className="flex items-center gap-2 px-2 py-1 rounded bg-red-500/90 text-white text-xs font-semibold shadow animate-pulse">
+                        <span className="inline-block w-4 h-4 mr-1">🚨</span>
+                        <span className="truncate max-w-[80px]">{alert.alertName}</span>
+                        <span className="ml-2 px-2 py-0.5 rounded bg-white/20">{alert.pollutantName}</span>
+                        <span className="ml-1">AQI {alert.aqiCondition === "greater" ? ">" : "<"} {alert.aqiValue}</span>
+                        <span className="ml-2 px-2 py-0.5 rounded bg-green-600/80 text-white">Triggered</span>
+                        <button
+                          onClick={() => setDismissedAlertId(alert._id)}
+                          className="ml-1 text-white/80 hover:text-white text-base font-bold px-1 py-0 rounded focus:outline-none"
+                          title="Dismiss alert"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    )
+                  ))}
                 </div>
               )}
 
@@ -899,7 +925,7 @@ const UserDashboard = () => {
                   </ul>
                 </div>
 
-                {/* Activity Recommendations */}
+                {/* Activity Recommendations (commented out)
                 <div className="health-card">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
@@ -922,8 +948,7 @@ const UserDashboard = () => {
                     )}
                   </div>
                 </div>
-
-
+                */}
               </div>
             </motion.div>
 

@@ -486,7 +486,7 @@ const HomePage = () => {
             </div>
             <motion.div
               variants={fadeIn}
-              className="absolute top-6 left-6 z-10 bg-white dark:bg-gray-800 rounded-xl shadow-xl p-4 max-w-xs"
+              className="absolute top-2 left-6 z-10 bg-white dark:bg-gray-800 rounded-xl shadow-xl p-4 max-w-xs"
             >
               <AqiCard 
                 selectedZone={selectedZone} 
@@ -510,7 +510,7 @@ const HomePage = () => {
             </motion.div>
             <motion.ul
               variants={staggerContainer}
-              className="absolute bottom-4 left-4 right-4 z-10 bg-white dark:bg-gray-800 rounded-xl p-3 shadow-lg grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2"
+              className="absolute bottom-0 left-4 right-4 z-10 bg-white dark:bg-gray-800 rounded-xl p-3 shadow-lg grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2"
             >
               {Object.entries(categoryColors).map(([key, color]) => {
                 const category = aqiCategories[key];

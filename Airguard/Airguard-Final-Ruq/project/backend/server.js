@@ -40,7 +40,7 @@ require('./jobs/aggredateJob');
 
 app.use('/auth/forecast', forecastRouter);
 app.use('/auth', authRoutes);
-app.use('/auth/chatbot', chatbotRoutes); // Mount at /auth/chatbot
+app.use('/auth/chatbot', chatbotRoutes);
 app.use('/api/aqi-sensor', aqiSensorRoutes);
 app.use('/api/pollution-reports', pollutionReports);
 app.use('/api/sensor-locations', sensorLocations);

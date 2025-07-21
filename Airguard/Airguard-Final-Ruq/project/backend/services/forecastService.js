@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const FORECAST_SERVICE_URL = 'http://localhost:5003';
+const FORECAST_SERVICE_URL = process.env.FLASK_SERVICE_URL || 'http://localhost:5003';
 
 class ForecastService {
   async trainModel(data) {

@@ -27,7 +27,8 @@ router.post('/', async (req, res) => {
   console.log('Sending forecast payload to Flask:', JSON.stringify(payload, null, 2));
 
   try {
-    const response = await axios.post('http://localhost:5003/forecast', payload, {
+    const forecastServiceUrl = process.env.FLASK_SERVICE_URL || 'http://localhost:5003';
+    const response = await axios.post(`${forecastServiceUrl}/forecast`, payload, {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -56,7 +57,8 @@ router.post('/', async (req, res) => {
 router.post('/train-models', async (req, res) => {
   try {
     console.log('Raw train-models request:', JSON.stringify(req.body, null, 2));
-    const response = await axios.post('http://localhost:5003/train', req.body, {
+    const forecastServiceUrl = process.env.FLASK_SERVICE_URL || 'http://localhost:5003';
+    const response = await axios.post(`${forecastServiceUrl}/train`, req.body, {
       headers: { 'Content-Type': 'application/json' },
       timeout: 15000,
     });

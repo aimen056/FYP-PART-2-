@@ -75,7 +75,6 @@ const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [formattedMarkers, setFormattedMarkers] = useState([]);
   const [sensorLocations, setSensorLocations] = useState([]);
-  const [dominantPollutant, setDominantPollutant] = useState("N/A");
   const [historicalData, setHistoricalData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -112,6 +111,21 @@ const HomePage = () => {
     if (aqi <= 200) return "unhealthy";
     if (aqi <= 300) return "veryUnhealthy";
     return "hazardous";
+  };
+
+  // Compute dominant pollutant from AQI data, just like UserDashboard
+  const getDominantPollutant = (pollutants) => {
+    if (!pollutants) return null;
+    const pollutantValues = [
+      { name: "pm2_5", value: pollutants.pm2_5?.aqi || 0 },
+      { name: "pm10", value: pollutants.pm10?.aqi || 0 },
+      { name: "o3", value: pollutants.o3?.aqi || 0 },
+      { name: "co", value: pollutants.co?.aqi || 0 },
+      { name: "no2", value: pollutants.no2?.aqi || 0 },
+      { name: "so2", value: pollutants.so2?.aqi || 0 },
+    ];
+    pollutantValues.sort((a, b) => b.value - a.value);
+    return pollutantValues[0]?.name || null;
   };
 
   const locationToZoneMapping = {
@@ -488,13 +502,10 @@ const HomePage = () => {
               variants={fadeIn}
               className="absolute top-2 left-6 z-10 bg-white dark:bg-gray-800 rounded-xl shadow-xl p-4 max-w-xs"
             >
-              <AqiCard 
-                selectedZone={selectedZone} 
-                aqi={aqiData?.overallAQI} 
-                category={getAqiCategory(aqiData?.overallAQI || 0)}
-                dominantPollutant={dominantPollutant}
-                lastUpdated={new Date().toLocaleTimeString()}
-                t={t}
+              <AqiCard
+                aqi={aqiData?.overallAQI}
+                selectedZone={selectedZone}
+                dominantPollutant={getDominantPollutant(aqiData?.pollutants)}
               />
             </motion.div>
             <motion.div
@@ -688,22 +699,22 @@ const HomePage = () => {
                     <PollutantBox
                       name={t("pollutants.pm2_5")}
                       value={aqiData.pollutants.pm2_5?.value}
-                      isDominant={dominantPollutant === "PM2_5"}
+                      isDominant={getDominantPollutant(aqiData.pollutants) === "pm2_5"}
                     />
                     <PollutantBox
                       name={t("pollutants.pm10")}
                       value={aqiData.pollutants.pm10?.value}
-                      isDominant={dominantPollutant === "PM10"}
+                      isDominant={getDominantPollutant(aqiData.pollutants) === "pm10"}
                     />
                     <PollutantBox
                       name={t("pollutants.o3")}
                       value={aqiData.pollutants.o3?.value}
-                      isDominant={dominantPollutant === "O3"}
+                      isDominant={getDominantPollutant(aqiData.pollutants) === "o3"}
                     />
                     <PollutantBox
                       name={t("pollutants.co")}
                       value={aqiData.pollutants.co?.value}
-                      isDominant={dominantPollutant === "CO"}
+                      isDominant={getDominantPollutant(aqiData.pollutants) === "co"}
                     />
                   </>
                 ) : (

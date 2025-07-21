@@ -56,9 +56,29 @@ router.post('/', async (req, res) => {
 
 router.post('/train-models', async (req, res) => {
   try {
-    console.log('Raw train-models request:', JSON.stringify(req.body, null, 2));
+    console.log('Raw train-models request from frontend:', JSON.stringify(req.body, null, 2));
+
+    const historicalData = req.body.data;
+
+    const payload = {
+      historical: {
+        timestamps: Array.isArray(historicalData)
+          ? historicalData.map((d) => d.intervalStart.replace(/Z$/, '+00:00'))
+          : [],
+        aqi: Array.isArray(historicalData)
+          ? historicalData.map((d) => Number(d.aqi))
+          : [],
+      },
+    };
+
+    if (!payload.historical.timestamps.length || !payload.historical.aqi.length) {
+      return res.status(400).json({ message: 'Invalid payload: historical data is missing or malformed.' });
+    }
+
+    console.log('Sending transformed payload to Flask:', JSON.stringify(payload, null, 2));
+
     const forecastServiceUrl = process.env.FLASK_SERVICE_URL || 'http://localhost:5003';
-    const response = await axios.post(`${forecastServiceUrl}/train`, req.body, {
+    const response = await axios.post(`${forecastServiceUrl}/train`, payload, {
       headers: { 'Content-Type': 'application/json' },
       timeout: 15000,
     });

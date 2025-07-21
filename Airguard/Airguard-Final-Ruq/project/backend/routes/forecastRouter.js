@@ -58,24 +58,16 @@ router.post('/train-models', async (req, res) => {
   try {
     console.log('Raw train-models request from frontend:', JSON.stringify(req.body, null, 2));
 
-    const historicalData = req.body.data;
-
+    // Final Fix: The Flask /train endpoint expects a 'data' key containing the array of historical objects.
     const payload = {
-      historical: {
-        timestamps: Array.isArray(historicalData)
-          ? historicalData.map((d) => d.intervalStart.replace(/Z$/, '+00:00'))
-          : [],
-        aqi: Array.isArray(historicalData)
-          ? historicalData.map((d) => Number(d.aqi))
-          : [],
-      },
+      data: req.body.data,
     };
 
-    if (!payload.historical.timestamps.length || !payload.historical.aqi.length) {
-      return res.status(400).json({ message: 'Invalid payload: historical data is missing or malformed.' });
+    if (!payload.data || !Array.isArray(payload.data) || payload.data.length === 0) {
+      return res.status(400).json({ message: 'Invalid payload: "data" array is missing or empty.' });
     }
 
-    console.log('Sending transformed payload to Flask:', JSON.stringify(payload, null, 2));
+    console.log('Sending final transformed payload to Flask:', JSON.stringify(payload, null, 2));
 
     const forecastServiceUrl = process.env.FLASK_SERVICE_URL || 'http://localhost:5003';
     const response = await axios.post(`${forecastServiceUrl}/train`, payload, {

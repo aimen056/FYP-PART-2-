@@ -44,7 +44,7 @@ exports.chatWithAI = async (req, res) => {
       {
         headers: {
           Authorization: `Bearer ${DEEPSEEK_CONFIG.API_KEY}`,
-          'HTTP-Referer': 'http://localhost:5173', // Update to deployed URL in production
+          'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:5173', // Use env var for production
           'X-Title': 'AirGuard',
           'Content-Type': 'application/json',
         },

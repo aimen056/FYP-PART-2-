@@ -6,40 +6,39 @@ const router = express.Router();
 
 router.post("/", chatWithAI);
 
-// Add a temporary test route for debugging
+// Final Test Route: Perform the exact POST request that is failing.
 router.get("/test-api", async (req, res) => {
   const apiKey = process.env.OPENROUTER_API_KEY;
 
   if (!apiKey) {
     return res.status(500).json({
-      message: "Test failed: OPENROUTER_API_KEY is not defined in the environment.",
-      found: false,
+      message: "Test failed: OPENROUTER_API_KEY is not defined.",
     });
   }
 
-  if (apiKey.length < 10) {
-    return res.status(500).json({
-        message: "Test failed: OPENROUTER_API_KEY seems too short to be a real key.",
-        found: true,
-        keyIsShort: true,
-      });
-  }
+  const payload = {
+    model: 'deepseek/deepseek-r1-distill-qwen-7b',
+    messages: [{ role: 'user', content: 'What is the capital of France?' }],
+  };
 
   try {
-    // A simple, cheap API call to test the key
-    await axios.get('https://openrouter.ai/api/v1/models', {
-        headers: { 'Authorization': `Bearer ${apiKey}` }
-    });
+    const response = await axios.post(
+      'https://openrouter.ai/api/v1/chat/completions',
+      payload,
+      {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
     res.status(200).json({
-        message: "SUCCESS: The API key is working correctly!",
-        found: true,
-        keyIsValid: true,
+        message: "SUCCESS: The POST request from the test route worked!",
+        data: response.data,
     });
   } catch (error) {
     res.status(500).json({
-        message: `Test failed: The API key was found but is invalid or rejected by OpenRouter. Error: ${error.message}`,
-        found: true,
-        keyIsValid: false,
+        message: `FAIL: The POST request from the test route failed with the same error. This points to an API key permission issue.`,
         error: {
             status: error.response?.status,
             data: error.response?.data,

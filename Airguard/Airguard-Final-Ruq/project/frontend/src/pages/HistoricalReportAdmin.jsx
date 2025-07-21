@@ -83,7 +83,7 @@ const HistoricalReportAdmin = () => {
       }
       setError(
         err.code === "ECONNREFUSED"
-          ? "Cannot connect to server at http://localhost:5002. Ensure the backend is running and try again."
+          ? "Cannot connect to server at " + import.meta.env.VITE_BACKEND_URL + ". Ensure the backend is running and try again."
           : `Failed to load historical data: ${err.message}`
       );
       setHistoricalData([]);

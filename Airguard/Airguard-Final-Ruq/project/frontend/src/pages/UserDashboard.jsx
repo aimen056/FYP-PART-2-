@@ -369,7 +369,7 @@ const UserDashboard = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get("http://localhost:5002/api/data/latest", {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/data/latest`, {
           params: userData?.city ? { city: userData.city } : { zone: selectedZone },
         });
         const currentData = response.data;
@@ -453,7 +453,7 @@ const UserDashboard = () => {
   useEffect(() => {
     const fetchSensorLocations = async () => {
       try {
-        const response = await axios.get("http://localhost:5002/api/sensor-locations");
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/sensor-locations`);
         setSensorLocations(response.data);
         const formatted = response.data.map((sensor) => ({
           geocode: [sensor.lat, sensor.lon],
@@ -490,7 +490,7 @@ const UserDashboard = () => {
         endDate = new Date(yesterday.setHours(23, 59, 59, 999)).toISOString();
       }
 
-      const response = await axios.get("http://localhost:5002/api/aggregated", {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/aggregated`, {
         params: { zone, startDate, endDate },
       });
 
@@ -642,7 +642,7 @@ const UserDashboard = () => {
     if (window.confirm(t("reports.confirm_delete"))) {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.delete(`http://localhost:5002/api/reports/${reportId}`, {
+        const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/reports/${reportId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -6,18 +6,16 @@ import toast from "react-hot-toast";
 export const fetchAlerts = createAsyncThunk(
   "alerts/fetchAlerts",
   async () => {
-    const response = await axios.get("/auth/alerts");
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/alerts`);
     return response.data;
   }
 );
 
-// Create a new alert
+// Create new alert
 export const createAlert = createAsyncThunk(
   "alerts/createAlert",
   async (alertData) => {
-    const response = await axios.post("/auth/alerts", alertData);
-    console.log("Updating alert with ID:", id, alertData);
-
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/alerts`, alertData);
     return response.data;
   }
 );

@@ -9,6 +9,9 @@ const AqiCard = ({ selectedZone = "Unknown location" }) => {
     loading: true,
     error: null
   });
+  // Add this to any component (like App.jsx or Home.jsx) temporarily
+console.log('VITE_BACKEND_URL:', import.meta.env.VITE_BACKEND_URL);
+console.log('All env vars:', import.meta.env);
 
   // AQI category configuration with enhanced colors
   const categoryColors = {

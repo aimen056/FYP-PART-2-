@@ -71,7 +71,7 @@ export const verifyReport = createAsyncThunk(
   "pollution/verifyReport",
   async ({ id, verificationStatus, rejectionComment }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`http://localhost:5002/api/reports/${id}`, {
+      const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/reports/${id}`, {
         verificationStatus,
         rejectionComment,
       });

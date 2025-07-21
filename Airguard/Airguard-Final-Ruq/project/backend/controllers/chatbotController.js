@@ -1,16 +1,12 @@
 const axios = require('axios');
 
-const DEEPSEEK_CONFIG = {
-  API_URL: 'https://openrouter.ai/api/v1/chat/completions',
-  API_KEY: process.env.OPENROUTER_API_KEY,
-  TIMEOUT: 15000,
-};
-
 exports.chatWithAI = async (req, res) => {
   console.log('Received request:', req.body);
   try {
-    if (!process.env.OPENROUTER_API_KEY) {
-      throw new Error('OpenRouter API key not configured');
+    const apiKey = process.env.OPENROUTER_API_KEY;
+
+    if (!apiKey) {
+      throw new Error('OpenRouter API key not configured or not available in the environment.');
     }
 
     const { message } = req.body;
@@ -25,14 +21,8 @@ exports.chatWithAI = async (req, res) => {
       User Query: ${message}
     `;
 
-    console.log('Sending request to OpenRouter:', {
-      url: DEEPSEEK_CONFIG.API_URL,
-      model: 'deepseek/deepseek-r1-distill-qwen-7b',
-      message,
-    });
-
     const response = await axios.post(
-      DEEPSEEK_CONFIG.API_URL,
+      'https://openrouter.ai/api/v1/chat/completions',
       {
         model: 'deepseek/deepseek-r1-distill-qwen-7b',
         messages: [
@@ -43,16 +33,14 @@ exports.chatWithAI = async (req, res) => {
       },
       {
         headers: {
-          Authorization: `Bearer ${DEEPSEEK_CONFIG.API_KEY}`,
-          // 'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:5173', // Temporarily remove to debug
+          Authorization: `Bearer ${apiKey}`, // Use the key read inside the function
           'X-Title': 'AirGuard',
           'Content-Type': 'application/json',
         },
-        timeout: DEEPSEEK_CONFIG.TIMEOUT,
+        timeout: 15000,
       },
     );
 
-    console.log('OpenRouter response:', response.data);
     const botResponse = response.data.choices[0]?.message.content || 'Sorry, I could not process your request.';
     res.json({ message: botResponse });
   } catch (error) {
@@ -60,7 +48,6 @@ exports.chatWithAI = async (req, res) => {
       message: error.message,
       status: error.response?.status,
       data: error.response?.data,
-      stack: error.stack,
     });
     const fallback = `
       ⚠️ Sorry, I'm having trouble responding. Here are general air quality tips:

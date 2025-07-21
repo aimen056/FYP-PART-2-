@@ -3,7 +3,7 @@ import axios from "axios";
 import { PieChart, Pie, Cell } from "recharts";
 import { motion } from "framer-motion";
 
-const AqiCard = ({ selectedZone = "Unknown location" }) => {
+const AqiCard = ({ selectedZone = "Unknown location", dominantPollutant }) => {
   const [aqiData, setAqiData] = useState({
     aqi: null,
     loading: true,
@@ -242,6 +242,16 @@ console.log('All env vars:', import.meta.env);
           >
             {categoryLabel}
           </motion.p>
+          {dominantPollutant && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.85 }}
+              className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1"
+            >
+              Major Pollutant: {getPollutantLabel(dominantPollutant)}
+            </motion.p>
+          )}
         </div>
       </motion.div>
 
@@ -279,6 +289,19 @@ function getEmoji(category) {
     hazardous: "☠️"
   };
   return emojiMap[category] || "—";
+}
+
+// Helper function for pollutant label
+function getPollutantLabel(key) {
+  const labels = {
+    pm2_5: "PM2.5",
+    pm10: "PM10",
+    o3: "O₃",
+    co: "CO",
+    no2: "NO₂",
+    so2: "SO₂"
+  };
+  return labels[key] || key;
 }
 
 export default AqiCard;

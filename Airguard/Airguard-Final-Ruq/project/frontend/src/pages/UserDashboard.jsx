@@ -15,6 +15,7 @@ import HealthRecommendations from "../components/HealthRecommendations";
 import AQIForecastChart from "../components/AQIForecastChart";
 import Chatbot from "../components/Chatbot";
 import ReportPollution from "./ReportPollution";
+import Ticker from "../components/Ticker";
 
 
 // Error Boundary Component
@@ -208,12 +209,11 @@ const UserDashboard = () => {
     }, [showTooltip]);
 
     return (
-    <motion.div
+      <motion.div
         ref={boxRef}
-      variants={fadeIn}
-        className={`relative flex flex-col items-center justify-center w-24 h-28 m-2 rounded-xl shadow-xl bg-white/70 dark:bg-gray-900/70 border border-gray-100 dark:border-gray-800 backdrop-blur-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl group ${
-        isDominant ? "" : ""
-      }`}
+        variants={fadeIn}
+        className={`relative flex flex-col items-center justify-center w-24 h-28 m-2 rounded-xl shadow-xl bg-white/70 dark:bg-gray-900/70 border border-gray-100 dark:border-gray-800 backdrop-blur-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl group ${isDominant ? "" : ""
+          }`}
         whileHover={{ scale: 1.07 }}
         tabIndex={0}
         aria-label={`${name} pollutant, AQI: ${data?.aqi || 'N/A'}`}
@@ -230,11 +230,11 @@ const UserDashboard = () => {
               now
               <defs>
                 <linearGradient id="crownGradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#FFD700"/>
-                  <stop offset="1" stopColor="#FFA500"/>
+                  <stop stopColor="#FFD700" />
+                  <stop offset="1" stopColor="#FFA500" />
                 </linearGradient>
                 <filter id="crownShadow" x="-4" y="-4" width="40" height="40" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                  <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#FBBF24"/>
+                  <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#FBBF24" />
                 </filter>
               </defs>
             </svg>
@@ -246,7 +246,7 @@ const UserDashboard = () => {
         <span className="text-[10px] text-gray-500 dark:text-gray-400">µg/m³</span>
         {/* Dominant badge: simple, new teal gradient color */}
         {isDominant && (
-          <span className="absolute -top-2 right-2 bg-gradient-to-r from-teal-400 to-cyan-500 text-white text-[10px] px-2 py-0.5 rounded-full shadow-md font-semibold border border-white/40 dark:border-gray-900/40" style={{filter:'blur(0px)'}}>Dominant</span>
+          <span className="absolute -top-2 right-2 bg-gradient-to-r from-teal-400 to-cyan-500 text-white text-[10px] px-2 py-0.5 rounded-full shadow-md font-semibold border border-white/40 dark:border-gray-900/40" style={{ filter: 'blur(0px)' }}>Dominant</span>
         )}
         {/* Tooltip: show above or below based on available space */}
         {showTooltip && (
@@ -257,8 +257,8 @@ const UserDashboard = () => {
             {pollutantHealthImpacts[key]}
           </div>
         )}
-    </motion.div>
-  );
+      </motion.div>
+    );
   };
 
   const getDominantPollutant = (pollutants) => {
@@ -302,9 +302,9 @@ const UserDashboard = () => {
     // Add current zone data
     historicalData.forEach((item) => {
       heatmapData.push({
-      x: new Date(item.timestamp).toLocaleDateString(),
-      y: selectedZone,
-      value: item.aqi || 0,
+        x: new Date(item.timestamp).toLocaleDateString(),
+        y: selectedZone,
+        value: item.aqi || 0,
         timestamp: item.timestamp,
       });
     });
@@ -634,7 +634,7 @@ const UserDashboard = () => {
       reportPollutionRef.current.handleEdit(report);
     } else {
       // Fallback: navigate to the report page with the report ID for editing
-    window.location.href = `/report?edit=${report._id}`;
+      window.location.href = `/report?edit=${report._id}`;
     }
   };
 
@@ -680,6 +680,10 @@ const UserDashboard = () => {
 
   return (
     <ErrorBoundary t={t}>
+      {/* Emergency Ticker for Very Unhealthy or Hazardous AQI */}
+      {highestAQI >= 201 && (
+        <Ticker message={`🚨 Emergency Alert: Air Quality is ${highestAQI > 300 ? 'HAZARDOUS' : 'VERY UNHEALTHY'}! Current AQI: ${highestAQI}. Avoid all outdoor activities and stay indoors. 🚨`} />
+      )}
       <motion.div
         className="pt-16 min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-purple-900 dark:to-slate-900 text-gray-800 dark:text-white"
         initial="hidden"
@@ -687,131 +691,251 @@ const UserDashboard = () => {
         variants={staggerContainer}
       >
         <style>
-          {`
-            .dashboard-container {
-              display: grid;
-              grid-template-columns: 1fr 1fr 1fr;
-              gap: 1.5rem;
-              max-width: 1400px;
-              margin: 0 auto;
-            }
-            @media (max-width: 1200px) {
-              .dashboard-container {
-                grid-template-columns: 1fr 1fr;
-              }
-            }
-            @media (max-width: 768px) {
-              .dashboard-container {
-                grid-template-columns: 1fr;
-              }
-            }
-            .modern-card {
-              background: rgba(255, 255, 255, 0.9);
-              backdrop-filter: blur(20px);
-              border: 1px solid rgba(148, 163, 184, 0.2);
-              border-radius: 16px;
-              box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-              transition: all 0.3s ease;
-            }
-            .dark .modern-card {
-              background: rgba(30, 41, 59, 0.8);
-              border: 1px solid rgba(148, 163, 184, 0.1);
-              box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            }
-            .modern-card:hover {
-              transform: translateY(-4px);
-              box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-              border-color: rgba(139, 92, 246, 0.3);
-            }
-            .dark .modern-card:hover {
-              box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-            }
-            .accent-gradient {
-              background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 50%, #10b981 100%);
-            }
-            .neon-glow {
-              box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-            }
-            .pollutant-grid {
-              display: grid;
-              grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-              gap: 1rem;
-            }
-            .pollutant-item {
-              background: rgba(248, 250, 252, 0.8);
-              border: 1px solid rgba(148, 163, 184, 0.3);
-              border-radius: 12px;
-              padding: 1rem;
-              text-align: center;
-              transition: all 0.3s ease;
-            }
-            .dark .pollutant-item {
-              background: rgba(51, 65, 85, 0.6);
-              border: 1px solid rgba(148, 163, 184, 0.2);
-            }
-            .pollutant-item:hover {
-              background: rgba(241, 245, 249, 0.9);
-              border-color: rgba(139, 92, 246, 0.5);
-              transform: scale(1.05);
-            }
-            .dark .pollutant-item:hover {
-              background: rgba(71, 85, 105, 0.8);
-            }
-            .dominant-pollutant {
-              background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
-              border-color: rgba(139, 92, 246, 0.6);
-              box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
-            }
-            .dark .dominant-pollutant {
-              background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.2));
-            }
-            .stats-grid {
-              display: grid;
-              grid-template-columns: repeat(2, 1fr);
-              gap: 1rem;
-            }
-            .stat-card {
-              background: rgba(248, 250, 252, 0.6);
-              border-radius: 12px;
-              padding: 1.5rem;
-              text-align: center;
-              border: 1px solid rgba(148, 163, 184, 0.2);
-            }
-            .dark .stat-card {
-              background: rgba(51, 65, 85, 0.4);
-              border: 1px solid rgba(148, 163, 184, 0.1);
-            }
-            .chart-container {
-              background: rgba(248, 250, 252, 0.8);
-              border-radius: 12px;
-              padding: 1rem;
-              border: 1px solid rgba(148, 163, 184, 0.2);
-            }
-            .dark .chart-container {
-              background: rgba(30, 41, 59, 0.6);
-              border: 1px solid rgba(148, 163, 184, 0.1);
-            }
-            .floating-header {
-              background: rgba(255, 255, 255, 0.95);
-              backdrop-filter: blur(20px);
-              border-bottom: 1px solid rgba(148, 163, 184, 0.2);
-            }
-            .dark .floating-header {
-              background: rgba(15, 23, 42, 0.9);
-              border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-            }
-            .health-card {
-              background: rgba(248, 250, 252, 0.6);
-              border-radius: 12px;
-              padding: 1rem;
-              border: 1px solid rgba(148, 163, 184, 0.2);
-            }
-            .dark .health-card {
-              background: rgba(51, 65, 85, 0.4);
-              border: 1px solid rgba(148, 163, 184, 0.1);
-            }
-          `}
-        </style>
+{`
+  .dashboard-container {
+    display: grid;
+    gap: clamp(1rem, 2vw, 1.5rem); /* Responsive gap */
+    width: 100%;
+    max-width: 1400px; /* Center content on large screens */
+    margin: 0 auto; /* Center content */
+    box-sizing: border-box;
+  }
+
+  /* Small screens (<768px): All cards full-width */
+  @media (max-width: 767px) {
+    .dashboard-container {
+      grid-template-columns: 1fr; /* Single column */
+    }
+    .modern-card {
+      grid-column: span 1; /* All cards span full width */
+      padding: clamp(0.75rem, 2vw, 1rem); /* Reduced padding for mobile */
+    }
+    .pollutant-grid {
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Smaller items on mobile */
+    }
+    .modern-card h3 {
+      font-size: clamp(0.875rem, 2.5vw, 1rem); /* Smaller headings */
+    }
+    .modern-card p,
+    .modern-card li {
+      font-size: clamp(0.75rem, 2vw, 0.875rem); /* Smaller text */
+    }
+    .group:hover .opacity-0 {
+      display: none; /* Disable hover tooltips on mobile */
+    }
+  }
+
+  /* Medium screens (768px–1024px) */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .dashboard-container {
+      grid-template-columns: 1fr 1fr; /* Two columns */
+    }
+    .map-card,
+    .leaderboard-card,
+    .heatmap-card,
+    .pollution-reports-card,
+    .aqi-forecast-card {
+      grid-column: span 2; /* Full width */
+    }
+    .health-insights-card,
+    .personalized-health-card,
+    .pollutants-card,
+    .aqi-trend-card {
+      grid-column: span 1; /* Half width */
+    }
+    .pollutant-grid {
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Slightly smaller items */
+    }
+  }
+
+  /* Large screens (>1024px) */
+  @media (min-width: 1025px) {
+    .dashboard-container {
+      grid-template-columns: repeat(3, 1fr); /* Three columns */
+    }
+    .map-card {
+      grid-column: span 2; /* 2 columns in Row 1 */
+    }
+    .health-insights-card {
+      grid-column: span 1; /* 1 column in Row 1 */
+    }
+    .personalized-health-card,
+    .pollutants-card,
+    .aqi-trend-card {
+      grid-column: span 1; /* 1 column each in Row 2 */
+    }
+    .leaderboard-card {
+      grid-column: span 1; /* 1 column in Row 3 */
+    }
+    .heatmap-card {
+      grid-column: span 2; /* 2 columns in Row 3 */
+    }
+    .pollution-reports-card {
+      grid-column: span 1; /* 1 column in Row 4 */
+    }
+    .aqi-forecast-card {
+      grid-column: span 2; /* 2 columns in Row 4 */
+    }
+  }
+
+  .modern-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    padding: clamp(1rem, 2.5vw, 1.5rem); /* Responsive padding */
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden; /* Prevent content overflow */
+  }
+
+  .dark .modern-card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .modern-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border-color: rgba(139, 92, 246, 0.3);
+  }
+
+  .dark .modern-card:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  .accent-gradient {
+    background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 50%, #10b981 100%);
+  }
+
+  .neon-glow {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+
+  .pollutant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: clamp(0.5rem, 2vw, 1rem); /* Responsive gap */
+  }
+
+  .pollutant-item {
+    background: rgba(248, 250, 252, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 12px;
+    padding: clamp(0.5rem, 2vw, 1rem); /* Responsive padding */
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .dark .pollutant-item {
+    background: rgba(51, 65, 85, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+  }
+
+  .pollutant-item:hover {
+    background: rgba(241, 245, 249, 0.9);
+    border-color: rgba(139, 92, 246, 0.5);
+    transform: scale(1.05);
+  }
+
+  .dark .pollutant-item:hover {
+    background: rgba(71, 85, 105, 0.8);
+  }
+
+  .dominant-pollutant {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
+    border-color: rgba(139, 92, 246, 0.6);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+  }
+
+  .dark .dominant-pollutant {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.2));
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(0.5rem, 2vw, 1rem); /* Responsive gap */
+  }
+
+  .stat-card {
+    background: rgba(248, 250, 252, 0.6);
+    border-radius: 12px;
+    padding: clamp(1rem, 2vw, 1.5rem); /* Responsive padding */
+    text-align: center;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+  }
+
+  .dark .stat-card {
+    background: rgba(51, 65, 85, 0.4);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+  }
+
+  .chart-container {
+    background: rgba(248, 250, 252, 0.8);
+    border-radius: 12px;
+    padding: clamp(0.5rem, 2vw, 1rem); /* Responsive padding */
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    height: clamp(200px, 30vh, 300px); /* Consistent chart height */
+    width: 100%;
+  }
+
+  .dark .chart-container {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+  }
+
+  .floating-header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    padding: clamp(0.5rem, 2vw, 1rem); /* Responsive padding */
+  }
+
+  .dark .floating-header {
+    background: rgba(15, 23, 42, 0.9);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  }
+
+  .health-card {
+    background: rgba(248, 250, 252, 0.6);
+    border-radius: 12px;
+    padding: clamp(0.5rem, 2vw, 1rem); /* Responsive padding */
+    border: 1px solid rgba(148, 163, 184, 0.2);
+  }
+
+  .dark .health-card {
+    background: rgba(51, 65, 85, 0.4);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+  }
+
+  /* Modal and tooltip responsiveness */
+  .health-card .absolute {
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .group .opacity-0 {
+    max-width: 90vw; /* Prevent tooltip overflow */
+  }
+
+  
+  /* Adjust icon sizes for mobile */
+  @media (max-width: 767px) {
+    .health-card .w-10.h-10 {
+      width: 2rem;
+      height: 2rem;
+    }
+    .pollution-reports-card .grid-cols-2 {
+      grid-template-columns: 1fr; /* Stack report details vertically */
+    }
+  }
+`}
+</style>
 
         {/* Modern Header */}
         <motion.header
@@ -827,30 +951,30 @@ const UserDashboard = () => {
                 {t("header.title")}
               </h1>
             </div>
-              <motion.form
-                variants={fadeIn}
-                onSubmit={handleSearch}
-                className="flex items-center gap-3 w-full lg:w-auto"
-              >
-                <div className="flex items-center w-full lg:w-80 gap-2">
-                  <input
-                    type="text"
-                    className="w-full px-4 py-2 bg-white/80 dark:bg-slate-800/50 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                    placeholder={t("search.placeholder")}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  <motion.button
-                    type="submit"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="p-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors flex items-center justify-center shadow-md"
-                    title={t("search.button")}
-                  >
-                    <BsSearch className="h-5 w-5" />
-                  </motion.button>
-                </div>
-              </motion.form>
+            <motion.form
+              variants={fadeIn}
+              onSubmit={handleSearch}
+              className="flex items-center gap-3 w-full lg:w-auto"
+            >
+              <div className="flex items-center w-full lg:w-80 gap-2">
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 bg-white/80 dark:bg-slate-800/50 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  placeholder={t("search.placeholder")}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <motion.button
+                  type="submit"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="p-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors flex items-center justify-center shadow-md"
+                  title={t("search.button")}
+                >
+                  <BsSearch className="h-5 w-5" />
+                </motion.button>
+              </div>
+            </motion.form>
           </div>
         </motion.header>
 
@@ -865,8 +989,8 @@ const UserDashboard = () => {
 
         <div className="p-6">
           <div className="dashboard-container">
-                        {/* Map with AQI Card Overlay */}
-            <motion.div variants={slideUp} className="modern-card p-6 col-span-2">
+            {/* Map with AQI Card Overlay */}
+            <motion.div variants={slideUp} className="modern-card p-6 map-card">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">
@@ -879,7 +1003,7 @@ const UserDashboard = () => {
                   <div className="text-sm text-gray-700 dark:text-slate-300">{new Date().toLocaleTimeString()}</div>
                 </div>
               </div>
-              
+
               <div className="relative h-96 rounded-xl overflow-hidden">
                 <HomeMap markers={formattedMarkers} fullscreen={false} />
                 <div className="absolute top-4 left-4 z-10">
@@ -889,36 +1013,52 @@ const UserDashboard = () => {
                     categoryColors={categoryColors}
                     getAqiCategory={getAqiCategory}
                     selectedZone={selectedZone}
+                    dominantPollutant={dominantPollutant}
                   />
                 </div>
               </div>
-              
+
               {/* Category Legend */}
-              <div className="mt-6 grid grid-cols-3 md:grid-cols-6 gap-2">
-                {Object.entries(categoryColors).map(([key, color]) => (
-                  <div key={key} className="flex items-center gap-2 text-sm">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }}></div>
-                    <span className="text-gray-700 dark:text-slate-300">{categoryLabels[key]}</span>
+              <div className="mt-6 relative">
+                <div className="absolute -top-7 right-0 flex items-center group z-10">
+                  <svg className="w-4 h-4 text-gray-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div className="absolute bottom-full right-0 mb-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3 text-xs text-gray-700 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <p>The legend colors show AQI categories. On the map, <span className='font-semibold text-green-600 dark:text-green-400'>green</span> markers indicate low AQI (clean air), while <span className='font-semibold text-red-600 dark:text-red-400'>red</span> markers indicate high AQI (polluted air).</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+                  {Object.entries(categoryColors).map(([key, color]) => (
+                    <div key={key} className="flex items-center gap-2 text-sm relative group">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }}></div>
+                      <span className="text-gray-700 dark:text-slate-300 cursor-help">
+                        {categoryLabels[key]}
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-2 text-xs text-gray-700 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none whitespace-normal">
+                          {getAqiCategoryTooltip(key)}
                         </div>
-                ))}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </motion.div>
 
             {/* Health Recommendations Cards */}
-            <motion.div variants={slideUp} className="modern-card p-6">
+            <motion.div variants={slideUp} className="modern-card p-6 health-insights-card">
               <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
                 Health Insights
                 <div className="relative group">
                   <svg className="w-4 h-4 text-gray-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+                  </svg>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3 text-xs text-gray-700 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                     <p>Quick health insights based on current air quality. Get immediate advice on activities, health tips, and safety recommendations for today's conditions.</p>
-                    </div>
                   </div>
+                </div>
               </h3>
-              
+
               <div className="space-y-4">
                 {/* Current AQI Status */}
                 <div className="health-card">
@@ -929,16 +1069,16 @@ const UserDashboard = () => {
                     <div>
                       <h4 className="text-gray-800 dark:text-white font-semibold">Current Status</h4>
                       <p className="text-gray-600 dark:text-slate-400 text-sm">{t(`category.${getAqiCategory(highestAQI)}`)}</p>
-                  </div>
+                    </div>
                   </div>
                   <p className="text-gray-700 dark:text-slate-300 text-sm">
-                      {highestAQI > ALERT_THRESHOLD
+                    {highestAQI > ALERT_THRESHOLD
                       ? "Air quality is hazardous. Avoid outdoor activities and use air purifiers indoors."
-                        : highestAQI > aqiCategories.unhealthy.max
-                      ? "Air quality is unhealthy. Limit outdoor activities, especially for sensitive groups."
+                      : highestAQI > aqiCategories.unhealthy.max
+                        ? "Air quality is unhealthy. Limit outdoor activities, especially for sensitive groups."
                         : highestAQI > aqiCategories.moderate.max
-                      ? "Air quality is moderate. Sensitive individuals should consider reducing outdoor activities."
-                      : "Air quality is good. Enjoy outdoor activities safely."}
+                          ? "Air quality is moderate. Sensitive individuals should consider reducing outdoor activities."
+                          : "Air quality is good. Enjoy outdoor activities safely."}
                   </p>
                 </div>
 
@@ -995,11 +1135,11 @@ const UserDashboard = () => {
 
 
               </div>
-                  </motion.div>
+            </motion.div>
 
             {/* Personalized Health Recommendations - Accordion Style */}
             {userData && userData.wantsAlerts && (
-              <motion.div variants={slideUp} className="modern-card p-4 relative">
+              <motion.div variants={slideUp} className="modern-card p-4 relative personalized-health-card">
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                   <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                   Your Personalized Health Plan
@@ -1009,7 +1149,7 @@ const UserDashboard = () => {
                     </svg>
                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3 text-xs text-gray-700 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                       <p>Get personalized health advice based on your age, medical conditions, and current air quality. Each category provides specific recommendations to protect your health.</p>
-                </div>
+                    </div>
                   </div>
                 </h3>
                 <div className="space-y-3">
@@ -1026,105 +1166,105 @@ const UserDashboard = () => {
                     </div>
                   )}
                   {userData.diseases && userData.diseases.includes('Respiratory conditions') && (
-                    <motion.div 
+                    <motion.div
                       className="health-card"
                       initial={false}
                     >
-                      <div 
+                      <div
                         className="p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors"
                         onClick={() => toggleCard('respiratory')}
                       >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center">
-                          <span className="text-white text-sm">🫁</span>
-                </div>
-                        <div>
-                          <h4 className="text-gray-800 dark:text-white font-semibold">Respiratory Health</h4>
-                          <p className="text-gray-600 dark:text-slate-400 text-sm">Lung & breathing care</p>
-                        </div>
-                      </div>
-                          <motion.svg 
-                            className="w-5 h-5 text-gray-500" 
-                            fill="none" 
-                            stroke="currentColor" 
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center">
+                              <span className="text-white text-sm">🫁</span>
+                            </div>
+                            <div>
+                              <h4 className="text-gray-800 dark:text-white font-semibold">Respiratory Health</h4>
+                              <p className="text-gray-600 dark:text-slate-400 text-sm">Lung & breathing care</p>
+                            </div>
+                          </div>
+                          <motion.svg
+                            className="w-5 h-5 text-gray-500"
+                            fill="none"
+                            stroke="currentColor"
                             viewBox="0 0 24 24"
                             animate={{ rotate: expandedCards.has('respiratory') ? 180 : 0 }}
                             transition={{ duration: 0.3 }}
                           >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                           </motion.svg>
-                    </div>
-                               </div>
+                        </div>
+                      </div>
                     </motion.div>
                   )}
                   {userData.diseases && userData.diseases.includes('Cardiovascular disease') && (
-                    <motion.div 
+                    <motion.div
                       className="health-card"
                       initial={false}
                     >
-                      <div 
+                      <div
                         className="p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors"
                         onClick={() => toggleCard('heart')}
                       >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 rounded-lg flex items-center justify-center">
-                          <span className="text-white text-sm">❤️</span>
-                        </div>
-                        <div>
-                          <h4 className="text-gray-800 dark:text-white font-semibold">Heart Health</h4>
-                          <p className="text-gray-600 dark:text-slate-400 text-sm">Cardiovascular care</p>
-                        </div>
-                      </div>
-                          <motion.svg 
-                            className="w-5 h-5 text-gray-500" 
-                            fill="none" 
-                            stroke="currentColor" 
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 rounded-lg flex items-center justify-center">
+                              <span className="text-white text-sm">❤️</span>
+                            </div>
+                            <div>
+                              <h4 className="text-gray-800 dark:text-white font-semibold">Heart Health</h4>
+                              <p className="text-gray-600 dark:text-slate-400 text-sm">Cardiovascular care</p>
+                            </div>
+                          </div>
+                          <motion.svg
+                            className="w-5 h-5 text-gray-500"
+                            fill="none"
+                            stroke="currentColor"
                             viewBox="0 0 24 24"
                             animate={{ rotate: expandedCards.has('heart') ? 180 : 0 }}
                             transition={{ duration: 0.3 }}
                           >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                           </motion.svg>
-                    </div>
-                               </div>
+                        </div>
+                      </div>
                     </motion.div>
                   )}
                   {userData.diseases && userData.diseases.includes('Chronic Diseases & Other Conditions') && (
-                    <motion.div 
+                    <motion.div
                       className="health-card"
                       initial={false}
                     >
-                      <div 
+                      <div
                         className="p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors"
                         onClick={() => toggleCard('chronic')}
                       >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
-                          <span className="text-white text-sm">🏥</span>
-                        </div>
-                        <div>
-                          <h4 className="text-gray-800 dark:text-white font-semibold">Chronic Conditions</h4>
-                          <p className="text-gray-600 dark:text-slate-400 text-sm">Diabetes, inflammation & more</p>
-                        </div>
-                      </div>
-                          <motion.svg 
-                            className="w-5 h-5 text-gray-500" 
-                            fill="none" 
-                            stroke="currentColor" 
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                              <span className="text-white text-sm">🏥</span>
+                            </div>
+                            <div>
+                              <h4 className="text-gray-800 dark:text-white font-semibold">Chronic Conditions</h4>
+                              <p className="text-gray-600 dark:text-slate-400 text-sm">Diabetes, inflammation & more</p>
+                            </div>
+                          </div>
+                          <motion.svg
+                            className="w-5 h-5 text-gray-500"
+                            fill="none"
+                            stroke="currentColor"
                             viewBox="0 0 24 24"
                             animate={{ rotate: expandedCards.has('chronic') ? 180 : 0 }}
                             transition={{ duration: 0.3 }}
                           >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                           </motion.svg>
-                    </div>
-                               </div>
+                        </div>
+                      </div>
                     </motion.div>
-                     )}
-                  </div>
+                  )}
+                </div>
 
                 {/* Modal overlays positioned relative to the parent card */}
                 {expandedCards.has('respiratory') && (
@@ -1166,7 +1306,7 @@ const UserDashboard = () => {
                             return 'Emergency: Dangerous air for respiratory health. Remain indoors, keep activity low, and seek immediate medical help if you have symptoms. (EPA/WHO)';
                           })()}
                         </div>
-                         <div className="text-gray-700 dark:text-slate-300 text-sm space-y-2">
+                        <div className="text-gray-700 dark:text-slate-300 text-sm space-y-2">
                           <p>• Use inhalers as prescribed during high AQI.</p>
                           <p>• Avoid outdoor exercise if air is poor.</p>
                           <p>• See a doctor if breathing worsens.</p>
@@ -1178,12 +1318,12 @@ const UserDashboard = () => {
                               <li>Bronchitis</li>
                               <li>Shortness of breath</li>
                             </ul>
-                               </div>
-                               </div>
-                         </div>
+                          </div>
+                        </div>
+                      </div>
                     </motion.div>
-                       </div>
-                     )}
+                  </div>
+                )}
 
                 {expandedCards.has('heart') && (
                   <div className="absolute inset-0 z-[999999] flex items-center justify-center bg-black/20 rounded-xl">
@@ -1196,22 +1336,22 @@ const UserDashboard = () => {
                     >
                       <div className="p-4">
                         <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 rounded-lg flex items-center justify-center">
                               <span className="text-white text-sm">❤️</span>
-                        </div>
-                        <div>
+                            </div>
+                            <div>
                               <h4 className="text-gray-800 dark:text-white font-semibold">Heart Health</h4>
                               <p className="text-gray-600 dark:text-slate-400 text-sm">Heart disease & more</p>
-                        </div>
-                      </div>
+                            </div>
+                          </div>
                           <button
                             onClick={() => toggleCard('heart')}
                             className="text-gray-400 hover:text-red-600 dark:hover:text-red-300 text-2xl font-bold"
                           >
                             &times;
                           </button>
-                    </div>
+                        </div>
                         {/* AQI health info for heart */}
                         <div className="mb-3 p-3 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-900 dark:text-red-200 text-sm font-medium">
                           {(() => {
@@ -1224,7 +1364,7 @@ const UserDashboard = () => {
                             return 'Emergency: Dangerous air for heart health. Remain indoors, keep activity low, and seek immediate medical help if you have symptoms. (EPA/WHO)';
                           })()}
                         </div>
-                         <div className="text-gray-700 dark:text-slate-300 text-sm space-y-2">
+                        <div className="text-gray-700 dark:text-slate-300 text-sm space-y-2">
                           <p>• Monitor blood pressure more often during high AQI.</p>
                           <p>• Avoid strenuous outdoor activities.</p>
                           <p>• Seek care if chest pain or palpitations occur.</p>
@@ -1236,12 +1376,12 @@ const UserDashboard = () => {
                               <li>Chest pain</li>
                               <li>High blood pressure</li>
                             </ul>
-                               </div>
-                               </div>
-                         </div>
+                          </div>
+                        </div>
+                      </div>
                     </motion.div>
-                       </div>
-                     )}
+                  </div>
+                )}
 
                 {expandedCards.has('chronic') && (
                   <div className="absolute inset-0 z-[999999] flex items-center justify-center bg-black/20 rounded-xl">
@@ -1254,22 +1394,22 @@ const UserDashboard = () => {
                     >
                       <div className="p-4">
                         <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
                               <span className="text-white text-sm">🏥</span>
-                          </div>
-                          <div>
+                            </div>
+                            <div>
                               <h4 className="text-gray-800 dark:text-white font-semibold">Chronic Conditions</h4>
                               <p className="text-gray-600 dark:text-slate-400 text-sm">Diabetes, inflammation & more</p>
+                            </div>
                           </div>
-                        </div>
                           <button
                             onClick={() => toggleCard('chronic')}
                             className="text-gray-400 hover:text-orange-600 dark:hover:text-orange-300 text-2xl font-bold"
                           >
                             &times;
                           </button>
-                      </div>
+                        </div>
                         {/* AQI health info for chronic */}
                         <div className="mb-3 p-3 rounded-lg bg-orange-50 dark:bg-orange-900/30 text-orange-900 dark:text-orange-200 text-sm font-medium">
                           {(() => {
@@ -1282,11 +1422,11 @@ const UserDashboard = () => {
                             return 'Emergency: Dangerous air for chronic conditions. Remain indoors, keep activity low, and seek immediate medical help if you have symptoms. (EPA/WHO)';
                           })()}
                         </div>
-                          <div className="text-gray-700 dark:text-slate-300 text-sm space-y-2">
+                        <div className="text-gray-700 dark:text-slate-300 text-sm space-y-2">
                           <p>• Monitor your condition more closely during high AQI days.</p>
                           <p>• Stay indoors and use air purifiers if possible.</p>
                           <p>• Contact your healthcare provider if symptoms worsen.</p>
-                          
+
                           <div className="mt-4 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
                             <h5 className="font-semibold text-orange-800 dark:text-orange-200 mb-2">Chronic Conditions Affected:</h5>
                             <ul className="space-y-1 text-sm">
@@ -1296,17 +1436,17 @@ const UserDashboard = () => {
                               <li><strong>Mental Health:</strong> Depression, anxiety</li>
                               <li><strong>IBD:</strong> Crohn's, colitis symptoms</li>
                             </ul>
-                              </div>
-                              </div>
                           </div>
-                    </motion.div>
                         </div>
-                      )}
-            </motion.div>
+                      </div>
+                    </motion.div>
+                  </div>
+                )}
+              </motion.div>
             )}
 
             {/* Pollutants Grid */}
-            <motion.div variants={slideUp} className="modern-card p-6">
+            <motion.div variants={slideUp} className="modern-card p-6 pollutants-card">
               <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
                 {t("pollutants.title")}
@@ -1334,7 +1474,7 @@ const UserDashboard = () => {
                       <div className="w-8 h-8 bg-gray-300 dark:bg-slate-600 rounded-full mx-auto mb-2"></div>
                       <div className="h-4 bg-gray-300 dark:bg-slate-600 rounded mb-1"></div>
                       <div className="h-6 bg-gray-300 dark:bg-slate-600 rounded"></div>
-                </div>
+                    </div>
                   ))
                 ) : aqiData ? (
                   <>
@@ -1376,12 +1516,12 @@ const UserDashboard = () => {
                             <div className="mb-1">
                               <span className="font-semibold">Category: </span>
                               <span>{category ? categoryLabels[category] : "N/A"}</span>
-                    </div>
+                            </div>
                             <div>
                               {pollutantHealthImpacts[key]}
-                    </div>
-                    </div>
-                    </div>
+                            </div>
+                          </div>
+                        </div>
                       );
                     })}
                   </>
@@ -1392,7 +1532,7 @@ const UserDashboard = () => {
             </motion.div>
 
             {/* AQI Trend Chart */}
-            <motion.div variants={slideUp} className="modern-card p-6">
+            <motion.div variants={slideUp} className="modern-card p-6 aqi-trend-card">
               <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                 {t("chart.aqi_trend")}
@@ -1405,237 +1545,66 @@ const UserDashboard = () => {
                   </div>
                 </div>
               </h3>
-              
+
               <div className="flex gap-2 mb-4">
                 <button
                   onClick={() => setSelectedDate("today")}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                        selectedDate === "today"
-                      ? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white"
-                      : "bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-300 dark:hover:bg-slate-700"
-                  }`}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${selectedDate === "today"
+                    ? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white"
+                    : "bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-300 dark:hover:bg-slate-700"
+                    }`}
                 >
                   Today
                 </button>
                 <button
                   onClick={() => setSelectedDate("yesterday")}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                        selectedDate === "yesterday"
-                      ? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white"
-                      : "bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-300 dark:hover:bg-slate-700"
-                  }`}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${selectedDate === "yesterday"
+                    ? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white"
+                    : "bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-300 dark:hover:bg-slate-700"
+                    }`}
                 >
                   Yesterday
                 </button>
                 <select
-                    value={selectedZone}
-                    onChange={(e) => setSelectedZone(e.target.value)}
+                  value={selectedZone}
+                  onChange={(e) => setSelectedZone(e.target.value)}
                   className="px-3 py-2 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-slate-300 rounded-lg text-sm border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-purple-500"
-                  >
-                    <option value="Zone 1">{t("zone.1")}</option>
-                    <option value="Zone 2">{t("zone.2")}</option>
-                    <option value="Zone 3">{t("zone.3")}</option>
-                    <option value="Zone 4">{t("zone.4")}</option>
+                >
+                  <option value="Zone 1">{t("zone.1")}</option>
+                  <option value="Zone 2">{t("zone.2")}</option>
+                  <option value="Zone 3">{t("zone.3")}</option>
+                  <option value="Zone 4">{t("zone.4")}</option>
                 </select>
               </div>
-              
+
               <div className="chart-container h-64">
-                  {loading ? (
+                {loading ? (
                   <div className="flex items-center justify-center h-full">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
                   </div>
-                  ) : historicalError ? (
+                ) : historicalError ? (
                   <div className="text-center text-red-600 dark:text-red-400">
                     <p className="mb-2">{historicalError}</p>
                     <button
-                        onClick={() => fetchHistoricalData(userData?.city || selectedZone, selectedDate)}
+                      onClick={() => fetchHistoricalData(userData?.city || selectedZone, selectedDate)}
                       className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                      >
+                    >
                       Retry
                     </button>
-                    </div>
-                  ) : historicalData.length > 0 ? (
-                    <canvas ref={trendChartRef} className="h-full w-full"></canvas>
-                  ) : (
+                  </div>
+                ) : historicalData.length > 0 ? (
+                  <canvas ref={trendChartRef} className="h-full w-full"></canvas>
+                ) : (
                   <div className="flex items-center justify-center h-full text-gray-500 dark:text-slate-400">
                     No data available
-              </div>
+                  </div>
                 )}
               </div>
             </motion.div>
 
-            {/* AQI Forecast */}
-            <motion.div variants={slideUp} className="modern-card p-6">
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
-                  {t("section.aqi_forecast")}
-                  <div className="relative group">
-                    <svg className="w-4 h-4 text-gray-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3 text-xs text-gray-700 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                      <p>See predicted air quality for the next few days. Use this to plan outdoor activities, travel, or health precautions in advance.</p>
-                </div>
-                  </div>
-              </h3>
-              <div className="chart-container">
-                  <AQIForecastChart selectedZone={selectedZone} />
-              </div>
-            </motion.div>
 
-            {/* Heatmap - 2 Column Grid */}
-            <motion.div
-              variants={slideUp}
-              className={`modern-card p-4 ${userData && userData.wantsAlerts ? 'col-span-2' : 'col-span-3'}`}
-            >
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
-                <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-                  {t("section.heatmap")}
-                  <div className="relative group">
-                    <svg className="w-4 h-4 text-gray-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3 text-xs text-gray-700 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                      <p>Visual map showing air quality across different zones. Darker colors indicate worse air quality. Use this to identify cleaner areas for activities.</p>
-                    </div>
-                  </div>
-              </h3>
-              <div className="chart-container">
-                  {loading ? (
-                  <div className="flex items-center justify-center h-24 text-gray-500 dark:text-slate-400">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-500"></div>
-                  </div>
-                  ) : historicalError ? (
-                  <div className="text-center text-red-600 dark:text-red-400 p-4">
-                    <p className="mb-2 text-sm">{historicalError}</p>
-                    <button
-                        onClick={() => fetchHistoricalData(userData?.city || selectedZone, selectedDate)}
-                      className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700"
-                      >
-                      Retry
-                    </button>
-                    </div>
-                  ) : (
-                    <Heatmap data={heatmapData} selectedZone={selectedZone} />
-                  )}
-              </div>
-            </motion.div>
-
-            {/* Pollution Reports */}
-            <motion.div variants={slideUp} className="modern-card p-6 col-span-2">
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-                {t("section.pollution_reports")}
-                <div className="relative group">
-                  <svg className="w-4 h-4 text-gray-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3 text-xs text-gray-700 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                    <p>View your submitted pollution reports and their verification status. Help the community by reporting pollution incidents you observe.</p>
-                  </div>
-                </div>
-              </h3>
-              
-              {status === "loading" ? (
-                <div className="flex justify-center items-center h-32">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
-                </div>
-              ) : userReports.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500 dark:text-slate-400 mb-4">{t("reports.empty")}</p>
-                  <NavLink 
-                    to="/report" 
-                    className="inline-block px-6 py-3 bg-gradient-to-r from-purple-500 to-cyan-500 text-white rounded-lg hover:from-purple-600 hover:to-cyan-600 transition-all"
-                  >
-                    {t("reports.report_now")}
-                  </NavLink>
-                </div>
-              ) : (
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => setCurrentReportIndex((prev) => Math.max(prev - 1, 0))}
-                    disabled={currentReportIndex === 0}
-                    className="p-3 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
-                  
-                  <div className="flex-1 bg-gray-100 dark:bg-slate-800/50 rounded-xl p-6 border border-gray-200 dark:border-slate-700">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                        <p className="text-sm text-gray-500 dark:text-slate-400">{t("reports.pollution_type")}</p>
-                        <p className="text-lg font-semibold text-gray-800 dark:text-white">{t(`pollution_type.${userReports[currentReportIndex].pollutionType}`)}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500 dark:text-slate-400">{t("location")}</p>
-                        <p className="text-lg font-semibold text-gray-800 dark:text-white">
-                          {userReports[currentReportIndex]?.location && userReports[currentReportIndex].location.length > 40
-                            ? userReports[currentReportIndex].location.slice(0, 40) + '...'
-                            : userReports[currentReportIndex].location}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500 dark:text-slate-400">{t("reports.date")}</p>
-                        <p className="text-lg font-semibold text-gray-800 dark:text-white">{userReports[currentReportIndex]?.date}</p>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span
-                          className={`px-3 py-1 text-sm rounded-full ${
-                                    userReports[currentReportIndex]?.verificationStatus === "verified"
-                              ? "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 border border-green-500/30"
-                                      : userReports[currentReportIndex]?.verificationStatus === "rejected"
-                              ? "bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300 border border-red-500/30"
-                              : "bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 border border-yellow-500/30"
-                                  }`}
-                                >
-                                  {userReports[currentReportIndex]?.verificationStatus === "verified"
-                                    ? "Verified"
-                                    : userReports[currentReportIndex]?.verificationStatus === "rejected"
-                                    ? "Rejected"
-                                    : "Pending"}
-                                </span>
-                                {userReports[currentReportIndex]?.verificationStatus === "rejected" && (
-                                  <button
-                                    onClick={() => handleEdit(userReports[currentReportIndex])}
-                            className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
-                                  >
-                            Edit
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                    
-                            {userReports[currentReportIndex]?.verificationStatus === "rejected" && (
-                      <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                        <p className="text-sm font-semibold text-red-800 dark:text-red-200 mb-1">Rejection Reason:</p>
-                                <p className="text-sm text-red-700 dark:text-red-300">
-                          {userReports[currentReportIndex].rejectionComment || "No specific reason provided."}
-                                </p>
-                            </div>
-                            )}
-                    
-                    <div className="mt-4 text-center text-sm text-gray-500 dark:text-slate-400">
-                      {currentReportIndex + 1} of {userReports.length}
-                          </div>
-                              </div>
-                  
-                  <button
-                    onClick={() => setCurrentReportIndex((prev) => Math.min(prev + 1, userReports.length - 1))}
-                    disabled={currentReportIndex === userReports.length - 1}
-                    className="p-3 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </div>
-              )}
-            </motion.div>
-
-            {/* Leaderboard */}
-            <motion.div variants={slideUp} className="modern-card p-6">
+            {/* Leaderboard - 1 Column */}
+            <motion.div variants={slideUp} className="modern-card p-6 leaderboard-card">
               <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>
                 {t("section.leaderboard")}
@@ -1663,7 +1632,7 @@ const UserDashboard = () => {
                   const totalReports = Object.values(userStats).reduce((sum, u) => sum + u.count, 0);
                   const totalUsers = Object.keys(userStats).length;
                   const sorted = Object.entries(userStats).sort((a, b) => b[1].count - a[1].count);
-                  const getInitials = (name) => name ? name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase() : '?';
+                  const getInitials = (name) => name ? name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() : '?';
                   const trophy = [
                     <span key="gold" title="1st" className="ml-1 text-yellow-400">🥇</span>,
                     <span key="silver" title="2nd" className="ml-1 text-gray-400">🥈</span>,
@@ -1704,19 +1673,190 @@ const UserDashboard = () => {
                           </span>
                           <span>Your rank: <span className="font-bold">{userRank + 1}</span></span>
                           <span className="ml-auto px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-xs font-semibold">{userStats[currentUser]?.count || 0}</span>
-                    </div>
-                  )}
+                        </div>
+                      )}
                     </>
                   );
                 })()}
               </div>
             </motion.div>
-                    </div>
+
+
+            {/* Heatmap - 2 Column Grid */}
+            <motion.div
+              variants={slideUp}
+              className="modern-card p-4 heatmap-card"
+            >
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
+                <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                {t("section.heatmap")}
+                <div className="relative group">
+                  <svg className="w-4 h-4 text-gray-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3 text-xs text-gray-700 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <p>Visual map showing air quality across different zones. Darker colors indicate worse air quality. Use this to identify cleaner areas for activities.</p>
+                  </div>
                 </div>
+              </h3>
+              <div className="chart-container">
+                {loading ? (
+                  <div className="flex items-center justify-center h-24 text-gray-500 dark:text-slate-400">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-500"></div>
+                  </div>
+                ) : historicalError ? (
+                  <div className="text-center text-red-600 dark:text-red-400 p-4">
+                    <p className="mb-2 text-sm">{historicalError}</p>
+                    <button
+                      onClick={() => fetchHistoricalData(userData?.city || selectedZone, selectedDate)}
+                      className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                ) : (
+                  <Heatmap data={heatmapData} selectedZone={selectedZone} />
+                )}
+              </div>
+            </motion.div>
+            {/* Pollution Reports - 1 Column */}
+            <motion.div variants={slideUp} className="modern-card p-6 pollution-reports-card">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                {t("section.pollution_reports")}
+                <div className="relative group">
+                  <svg className="w-4 h-4 text-gray-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3 text-xs text-gray-700 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <p>View your submitted pollution reports and their verification status. Help the community by reporting pollution incidents you observe.</p>
+                  </div>
+                </div>
+              </h3>
+              {/* pollution reports content unchanged */}
+              {status === "loading" ? (
+                <div className="flex justify-center items-center h-32">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+                </div>
+              ) : userReports.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-500 dark:text-slate-400 mb-4">{t("reports.empty")}</p>
+                  <NavLink
+                    to="/report"
+                    className="inline-block px-6 py-3 bg-gradient-to-r from-purple-500 to-cyan-500 text-white rounded-lg hover:from-purple-600 hover:to-cyan-600 transition-all"
+                  >
+                    {t("reports.report_now")}
+                  </NavLink>
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setCurrentReportIndex((prev) => Math.max(prev - 1, 0))}
+                    disabled={currentReportIndex === 0}
+                    className="p-3 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+
+                  <div className="flex-1 bg-gray-100 dark:bg-slate-800/50 rounded-xl p-6 border border-gray-200 dark:border-slate-700">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-gray-500 dark:text-slate-400">{t("reports.pollution_type")}</p>
+                        <p className="text-lg font-semibold text-gray-800 dark:text-white">{t(`pollution_type.${userReports[currentReportIndex].pollutionType}`)}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500 dark:text-slate-400">{t("location")}</p>
+                        <p className="text-lg font-semibold text-gray-800 dark:text-white">
+                          {userReports[currentReportIndex]?.location && userReports[currentReportIndex].location.length > 40
+                            ? userReports[currentReportIndex].location.slice(0, 40) + '...'
+                            : userReports[currentReportIndex].location}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500 dark:text-slate-400">{t("reports.date")}</p>
+                        <p className="text-lg font-semibold text-gray-800 dark:text-white">{userReports[currentReportIndex]?.date}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`px-3 py-1 text-sm rounded-full ${userReports[currentReportIndex]?.verificationStatus === "verified"
+                            ? "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 border border-green-500/30"
+                            : userReports[currentReportIndex]?.verificationStatus === "rejected"
+                              ? "bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300 border border-red-500/30"
+                              : "bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 border border-yellow-500/30"
+                            }`}
+                        >
+                          {userReports[currentReportIndex]?.verificationStatus === "verified"
+                            ? "Verified"
+                            : userReports[currentReportIndex]?.verificationStatus === "rejected"
+                              ? "Rejected"
+                              : "Pending"}
+                        </span>
+                        {userReports[currentReportIndex]?.verificationStatus === "rejected" && (
+                          <button
+                            onClick={() => handleEdit(userReports[currentReportIndex])}
+                            className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                          >
+                            Edit
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {userReports[currentReportIndex]?.verificationStatus === "rejected" && (
+                      <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                        <p className="text-sm font-semibold text-red-800 dark:text-red-200 mb-1">Rejection Reason:</p>
+                        <p className="text-sm text-red-700 dark:text-red-300">
+                          {userReports[currentReportIndex].rejectionComment || "No specific reason provided."}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="mt-4 text-center text-sm text-gray-500 dark:text-slate-400">
+                      {currentReportIndex + 1} of {userReports.length}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setCurrentReportIndex((prev) => Math.min(prev + 1, userReports.length - 1))}
+                    disabled={currentReportIndex === userReports.length - 1}
+                    className="p-3 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+            </motion.div>
+
+            {/* AQI Forecast - 2 Column */}
+            <motion.div variants={slideUp} className="modern-card p-6 aqi-forecast-card">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                {t("section.aqi_forecast")}
+                <div className="relative group">
+                  <svg className="w-4 h-4 text-gray-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3 text-xs text-gray-700 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <p>See predicted air quality for the next few days. Use this to plan outdoor activities, travel, or health precautions in advance.</p>
+                  </div>
+                </div>
+              </h3>
+              <div className="chart-container">
+                <AQIForecastChart selectedZone={selectedZone} />
+              </div>
+            </motion.div>
+
+
+          </div>
+        </div>
 
         {/* Floating Chatbot */}
         <div className="fixed bottom-6 right-6 z-50">
-            <Chatbot aqiData={aqiData} pollutants={aqiData?.pollutants} />
+          <Chatbot aqiData={aqiData} pollutants={aqiData?.pollutants} />
         </div>
       </motion.div>
     </ErrorBoundary>
@@ -1724,3 +1864,16 @@ const UserDashboard = () => {
 };
 
 export default UserDashboard;
+
+// Add this helper function inside the UserDashboard component:
+function getAqiCategoryTooltip(key) {
+  const tooltips = {
+    good: "0–50: Air quality is considered satisfactory, and air pollution poses little or no risk.",
+    moderate: "51–100: Air quality is acceptable; however, there may be a risk for some people, particularly those who are unusually sensitive to air pollution.",
+    unhealthySensitive: "101–150: Members of sensitive groups may experience health effects. The general public is less likely to be affected.",
+    unhealthy: "151–200: Some members of the general public may experience health effects; members of sensitive groups may experience more serious health effects.",
+    veryUnhealthy: "201–300: Health alert: The risk of health effects is increased for everyone.",
+    hazardous: "301–500: Health warning of emergency conditions: everyone is more likely to be affected."
+  };
+  return tooltips[key] || "";
+}

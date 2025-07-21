@@ -80,7 +80,7 @@ router.post('/train-models', async (req, res) => {
     const forecastServiceUrl = process.env.FLASK_SERVICE_URL || 'http://localhost:5003';
     const response = await axios.post(`${forecastServiceUrl}/train`, payload, {
       headers: { 'Content-Type': 'application/json' },
-      timeout: 15000,
+      timeout: 60000, // <-- Increased timeout to 60 seconds
     });
     console.log('Flask train response:', JSON.stringify(response.data, null, 2));
     res.json({ status: 'success' });

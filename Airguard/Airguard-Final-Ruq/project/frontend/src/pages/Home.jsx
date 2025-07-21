@@ -10,6 +10,7 @@ import HomeMap from "../components/HomeMap";
 import AqiCard from "../components/Home/AqiCard";
 import AQIForecastChart from "../components/AQIForecastChart";
 import { useTranslation } from "react-i18next";
+import Ticker from "../components/Ticker";
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component {
@@ -423,8 +424,15 @@ const HomePage = () => {
     hazardous: t("recommendation.dangerous"),
   };
 
+  const currentAQI = aqiData?.overallAQI || 0;
+  const currentAqiCategory = getAqiCategory(currentAQI);
+
   return (
     <ErrorBoundary t={t}>
+      {/* Emergency Ticker for Very Unhealthy or Hazardous AQI */}
+      {currentAQI >= 201 && (
+        <Ticker message={`🚨 Emergency Alert: Air Quality is ${currentAQI > 300 ? 'HAZARDOUS' : 'VERY UNHEALTHY'}! Current AQI: ${currentAQI}. Avoid all outdoor activities and stay indoors. 🚨`} />
+      )}
       <motion.div
         className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 pt-16 w-full"
         initial="hidden"

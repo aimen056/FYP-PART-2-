@@ -24,7 +24,6 @@ const Modal = ({ modalClose, alertData }) => {
         alertName: "",
         location: "",
         pollutantName: "",
-        thresholdType: "AQI",
         aqiCondition: "",
         aqiValue: "",
         status: true,
@@ -42,12 +41,12 @@ const Modal = ({ modalClose, alertData }) => {
   };
   const onSubmit = (data) => {
     const alertId = alertData?._id || Date.now(); // Generate a unique ID if missing
+    const alertPayload = { id: alertId, ...data, thresholdType: "AQI" };
     if (alertData) {
-      dispatch(updateAlert({ id: alertId, ...data }));
-      
+      dispatch(updateAlert(alertPayload));
     } else {
-      dispatch(createAlert({ id: alertId, ...data }));
-      reset()
+      dispatch(createAlert(alertPayload));
+      reset();
     }
     modalClose();
   };
@@ -156,86 +155,53 @@ const Modal = ({ modalClose, alertData }) => {
                 <div></div>
               </div>
               <div className="flex flex-col gap-3 sm:w-1/2">
+                {/* Removed Threshold Type radio/select since only AQI is supported */}
                 <div className="flex flex-col mt-6">
                   <label className="text-primaryText/70 dark:text-[#E4E4E7]/80 font-semibold uppercase text-sm">
-                    Threshold Type
+                    AQI Options:
                   </label>
-                  <div className="flex flex-col gap-2 mt-2">
-                    <div className="flex">
-                      <input
-                        type="radio"
-                        id="aqi"
-                        value="AQI"
-                        checked
-                        {...register("thresholdType", {
-                          required: "Please select a threshold type",
+                  <div className="flex items-center gap-2 mt-2">
+                    <div>
+                      {/* Condition Selector - only 'greater than' */}
+                      <select
+                        {...register("aqiCondition", {
+                          required: "Please select a condition",
                         })}
-                      />
-                      <label
-                        htmlFor="aqi"
-                        className="ml-2 text-primaryText/80 font-medium text-sm"
+                        className="p-2 border border-primaryBtnText/50 rounded-md bg-background"
                       >
-                        {"AQI (e.g., >100 or <50)"}
-                      </label>
+                        <option value="">Select Condition</option>
+                        <option value="greater">Greater than</option>
+                      </select>
+                      {errors.aqiCondition && (
+                        <span className="text-xs text-red-600">
+                          **{errors.aqiCondition.message}
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <select
+                        {...register("aqiValue", {
+                          required: "Please select an AQI value",
+                        })}
+                        className="p-2 border border-primaryBtnText/50 rounded-md bg-background"
+                      >
+                        <option value="">Select AQI Value</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="150">150</option>
+                        <option value="200">200</option>
+                        <option value="300">300</option>
+                      </select>
+                      {errors.aqiValue && (
+                        <span className="text-xs text-red-600">
+                          **{errors.aqiValue.message}
+                        </span>
+                      )}
                     </div>
                   </div>
-                                    {/* AQI Options */}
-                    <div className="mt-6 text-primaryText/60 font-medium text-sm">
-                      <label className="text-primaryText/70 dark:text-[#E4E4E7]/80 font-semibold uppercase text-sm">
-                        AQI Options:
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <div>
-                          {/* Condition Selector */}
-                          <select
-                            {...register("aqiCondition", {
-                            required: "Please select a condition",
-                            })}
-                            className="p-2 border border-primaryBtnText/50 rounded-md bg-background"
-                          >
-                            <option value="">Select Condition</option>
-                            <option value="greater">Greater than</option>
-                            <option value="less">Less than</option>
-                          </select>
-                          {errors.aqiCondition && (
-                            <span className="text-xs text-red-600">
-                              **{errors.aqiCondition.message}
-                            </span>
-                          )}
-                        </div>
-
-                        <div>
-                          {" "}
-                          <select
-                            {...register("aqiValue", {
-                            required: "Please select an AQI value",
-                            })}
-                            className="p-2 border border-primaryBtnText/50 rounded-md bg-background"
-                          >
-                            <option value="">Select AQI Value</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                            <option value="150">150</option>
-                            <option value="200">200</option>
-                            <option value="300">300</option>
-                          </select>
-                          {errors.aqiValue && (
-                            <span className="text-xs text-red-600">
-                              **{errors.aqiValue.message}
-                            </span>
-                          )}
-                        </div>
-                        {/* AQI Value Selector */}
-                      </div>
-
-                      {/* Error Messages */}
-                    </div>
-
-
                 </div>
               </div>
             </div>
-
             <input
               type="submit"
               className="bg-primaryBtnBg text-primaryBtnText font-semibold p-2 mt-4 w-1/2 rounded-md cursor-pointer"

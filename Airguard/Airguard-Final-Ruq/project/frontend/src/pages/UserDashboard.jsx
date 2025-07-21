@@ -4,6 +4,7 @@ import Chart from "chart.js/auto";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchReports } from "../redux/features/repPollutionSlice";
+import { fetchAlerts } from "../redux/features/alertSlice";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
@@ -15,7 +16,7 @@ import HealthRecommendations from "../components/HealthRecommendations";
 import AQIForecastChart from "../components/AQIForecastChart";
 import Chatbot from "../components/Chatbot";
 import ReportPollution from "./ReportPollution";
-import Ticker from "../components/Ticker";
+import './UserDashboard.css';
 
 
 // Error Boundary Component
@@ -90,6 +91,7 @@ const UserDashboard = () => {
   const [historicalError, setHistoricalError] = useState(null);
   const [currentReportIndex, setCurrentReportIndex] = useState(0);
   const [expandedCards, setExpandedCards] = useState(new Set());
+  const [dismissedAlertId, setDismissedAlertId] = useState(null);
 
   const gaugeChartRef = useRef(null);
   const trendChartRef = useRef(null);
@@ -610,10 +612,12 @@ const UserDashboard = () => {
 
   const dispatch = useDispatch();
   const { pollutions, status } = useSelector((state) => state.pollution);
+  const { alerts = [], status: alertStatus } = useSelector((state) => state.alert || {});
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     dispatch(fetchReports());
+    dispatch(fetchAlerts());
   }, [dispatch]);
 
   const scrollReports = (direction) => {
@@ -678,264 +682,31 @@ const UserDashboard = () => {
   // Debug: Log AQI and category
   console.log("highestAQI", highestAQI, "category", highestAqiCategory);
 
+  // Find the most relevant triggered alert (active, threshold exceeded, for current zone/city)
+  const triggeredAlert = alerts
+    .filter(a => a.status)
+    .find(a => {
+      // Only match for current zone/city
+      const matchesLocation = a.location === selectedZone || (userData?.city && a.location === userData.city);
+      // Check if AQI exceeds threshold (greater/less)
+      if (!aqiData) return false;
+      const pollutantAqi = aqiData.pollutants?.[a.pollutantName?.toLowerCase()?.replace('.', '_')]?.aqi || aqiData.overallAQI;
+      if (a.aqiCondition === "greater") {
+        return matchesLocation && pollutantAqi > a.aqiValue;
+      } else {
+        return matchesLocation && pollutantAqi < a.aqiValue;
+      }
+    });
+
   return (
     <ErrorBoundary t={t}>
-      {/* Emergency Ticker for Very Unhealthy or Hazardous AQI */}
-      {highestAQI >= 201 && (
-        <Ticker message={`🚨 Emergency Alert: Air Quality is ${highestAQI > 300 ? 'HAZARDOUS' : 'VERY UNHEALTHY'}! Current AQI: ${highestAQI}. Avoid all outdoor activities and stay indoors. 🚨`} />
-      )}
       <motion.div
         className="pt-16 min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-purple-900 dark:to-slate-900 text-gray-800 dark:text-white"
         initial="hidden"
         animate="visible"
         variants={staggerContainer}
       >
-        <style>
-{`
-  .dashboard-container {
-    display: grid;
-    gap: clamp(1rem, 2vw, 1.5rem); /* Responsive gap */
-    width: 100%;
-    max-width: 1400px; /* Center content on large screens */
-    margin: 0 auto; /* Center content */
-    box-sizing: border-box;
-  }
-
-  /* Small screens (<768px): All cards full-width */
-  @media (max-width: 767px) {
-    .dashboard-container {
-      grid-template-columns: 1fr; /* Single column */
-    }
-    .modern-card {
-      grid-column: span 1; /* All cards span full width */
-      padding: clamp(0.75rem, 2vw, 1rem); /* Reduced padding for mobile */
-    }
-    .pollutant-grid {
-      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Smaller items on mobile */
-    }
-    .modern-card h3 {
-      font-size: clamp(0.875rem, 2.5vw, 1rem); /* Smaller headings */
-    }
-    .modern-card p,
-    .modern-card li {
-      font-size: clamp(0.75rem, 2vw, 0.875rem); /* Smaller text */
-    }
-    .group:hover .opacity-0 {
-      display: none; /* Disable hover tooltips on mobile */
-    }
-  }
-
-  /* Medium screens (768px–1024px) */
-  @media (min-width: 768px) and (max-width: 1024px) {
-    .dashboard-container {
-      grid-template-columns: 1fr 1fr; /* Two columns */
-    }
-    .map-card,
-    .leaderboard-card,
-    .heatmap-card,
-    .pollution-reports-card,
-    .aqi-forecast-card {
-      grid-column: span 2; /* Full width */
-    }
-    .health-insights-card,
-    .personalized-health-card,
-    .pollutants-card,
-    .aqi-trend-card {
-      grid-column: span 1; /* Half width */
-    }
-    .pollutant-grid {
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Slightly smaller items */
-    }
-  }
-
-  /* Large screens (>1024px) */
-  @media (min-width: 1025px) {
-    .dashboard-container {
-      grid-template-columns: repeat(3, 1fr); /* Three columns */
-    }
-    .map-card {
-      grid-column: span 2; /* 2 columns in Row 1 */
-    }
-    .health-insights-card {
-      grid-column: span 1; /* 1 column in Row 1 */
-    }
-    .personalized-health-card,
-    .pollutants-card,
-    .aqi-trend-card {
-      grid-column: span 1; /* 1 column each in Row 2 */
-    }
-    .leaderboard-card {
-      grid-column: span 1; /* 1 column in Row 3 */
-    }
-    .heatmap-card {
-      grid-column: span 2; /* 2 columns in Row 3 */
-    }
-    .pollution-reports-card {
-      grid-column: span 1; /* 1 column in Row 4 */
-    }
-    .aqi-forecast-card {
-      grid-column: span 2; /* 2 columns in Row 4 */
-    }
-  }
-
-  .modern-card {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(148, 163, 184, 0.2);
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    padding: clamp(1rem, 2.5vw, 1.5rem); /* Responsive padding */
-    width: 100%;
-    box-sizing: border-box;
-    overflow: hidden; /* Prevent content overflow */
-  }
-
-  .dark .modern-card {
-    background: rgba(30, 41, 59, 0.8);
-    border: 1px solid rgba(148, 163, 184, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  }
-
-  .modern-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-    border-color: rgba(139, 92, 246, 0.3);
-  }
-
-  .dark .modern-card:hover {
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-  }
-
-  .accent-gradient {
-    background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 50%, #10b981 100%);
-  }
-
-  .neon-glow {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-  }
-
-  .pollutant-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: clamp(0.5rem, 2vw, 1rem); /* Responsive gap */
-  }
-
-  .pollutant-item {
-    background: rgba(248, 250, 252, 0.8);
-    border: 1px solid rgba(148, 163, 184, 0.3);
-    border-radius: 12px;
-    padding: clamp(0.5rem, 2vw, 1rem); /* Responsive padding */
-    text-align: center;
-    transition: all 0.3s ease;
-  }
-
-  .dark .pollutant-item {
-    background: rgba(51, 65, 85, 0.6);
-    border: 1px solid rgba(148, 163, 184, 0.2);
-  }
-
-  .pollutant-item:hover {
-    background: rgba(241, 245, 249, 0.9);
-    border-color: rgba(139, 92, 246, 0.5);
-    transform: scale(1.05);
-  }
-
-  .dark .pollutant-item:hover {
-    background: rgba(71, 85, 105, 0.8);
-  }
-
-  .dominant-pollutant {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
-    border-color: rgba(139, 92, 246, 0.6);
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
-  }
-
-  .dark .dominant-pollutant {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.2));
-  }
-
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: clamp(0.5rem, 2vw, 1rem); /* Responsive gap */
-  }
-
-  .stat-card {
-    background: rgba(248, 250, 252, 0.6);
-    border-radius: 12px;
-    padding: clamp(1rem, 2vw, 1.5rem); /* Responsive padding */
-    text-align: center;
-    border: 1px solid rgba(148, 163, 184, 0.2);
-  }
-
-  .dark .stat-card {
-    background: rgba(51, 65, 85, 0.4);
-    border: 1px solid rgba(148, 163, 184, 0.1);
-  }
-
-  .chart-container {
-    background: rgba(248, 250, 252, 0.8);
-    border-radius: 12px;
-    padding: clamp(0.5rem, 2vw, 1rem); /* Responsive padding */
-    border: 1px solid rgba(148, 163, 184, 0.2);
-    height: clamp(200px, 30vh, 300px); /* Consistent chart height */
-    width: 100%;
-  }
-
-  .dark .chart-container {
-    background: rgba(30, 41, 59, 0.6);
-    border: 1px solid rgba(148, 163, 184, 0.1);
-  }
-
-  .floating-header {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
-    padding: clamp(0.5rem, 2vw, 1rem); /* Responsive padding */
-  }
-
-  .dark .floating-header {
-    background: rgba(15, 23, 42, 0.9);
-    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  }
-
-  .health-card {
-    background: rgba(248, 250, 252, 0.6);
-    border-radius: 12px;
-    padding: clamp(0.5rem, 2vw, 1rem); /* Responsive padding */
-    border: 1px solid rgba(148, 163, 184, 0.2);
-  }
-
-  .dark .health-card {
-    background: rgba(51, 65, 85, 0.4);
-    border: 1px solid rgba(148, 163, 184, 0.1);
-  }
-
-  /* Modal and tooltip responsiveness */
-  .health-card .absolute {
-    max-width: 90vw;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-
-  .group .opacity-0 {
-    max-width: 90vw; /* Prevent tooltip overflow */
-  }
-
-  
-  /* Adjust icon sizes for mobile */
-  @media (max-width: 767px) {
-    .health-card .w-10.h-10 {
-      width: 2rem;
-      height: 2rem;
-    }
-    .pollution-reports-card .grid-cols-2 {
-      grid-template-columns: 1fr; /* Stack report details vertically */
-    }
-  }
-`}
-</style>
+      
 
         {/* Modern Header */}
         <motion.header
@@ -1008,10 +779,7 @@ const UserDashboard = () => {
                 <HomeMap markers={formattedMarkers} fullscreen={false} />
                 <div className="absolute top-4 left-4 z-10">
                   <AqiCard
-                    aqiData={aqiData}
-                    highestAQI={aqiData?.overallAQI || highestAQI}
-                    categoryColors={categoryColors}
-                    getAqiCategory={getAqiCategory}
+                    aqi={aqiData?.overallAQI || highestAQI}
                     selectedZone={selectedZone}
                     dominantPollutant={dominantPollutant}
                   />
@@ -1019,28 +787,13 @@ const UserDashboard = () => {
               </div>
 
               {/* Category Legend */}
-              <div className="mt-6 relative">
-                <div className="absolute -top-7 right-0 flex items-center group z-10">
-                  <svg className="w-4 h-4 text-gray-400 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div className="absolute bottom-full right-0 mb-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3 text-xs text-gray-700 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                    <p>The legend colors show AQI categories. On the map, <span className='font-semibold text-green-600 dark:text-green-400'>green</span> markers indicate low AQI (clean air), while <span className='font-semibold text-red-600 dark:text-red-400'>red</span> markers indicate high AQI (polluted air).</p>
+              <div className="mt-6 grid grid-cols-3 md:grid-cols-6 gap-2">
+                {Object.entries(categoryColors).map(([key, color]) => (
+                  <div key={key} className="flex items-center gap-2 text-sm">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }}></div>
+                    <span className="text-gray-700 dark:text-slate-300">{categoryLabels[key]}</span>
                   </div>
-                </div>
-                <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
-                  {Object.entries(categoryColors).map(([key, color]) => (
-                    <div key={key} className="flex items-center gap-2 text-sm relative group">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }}></div>
-                      <span className="text-gray-700 dark:text-slate-300 cursor-help">
-                        {categoryLabels[key]}
-                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-2 text-xs text-gray-700 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none whitespace-normal">
-                          {getAqiCategoryTooltip(key)}
-                        </div>
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                ))}
               </div>
             </motion.div>
 
@@ -1058,6 +811,43 @@ const UserDashboard = () => {
                   </div>
                 </div>
               </h3>
+
+              {/* Compact, dismissible alert banner if triggered */}
+              {triggeredAlert && triggeredAlert._id !== dismissedAlertId && (
+                <div className="mb-2 flex items-center gap-2 px-3 py-1.5 rounded bg-gradient-to-r from-red-500 to-orange-400 text-white shadow-md relative animate-pulse min-h-[36px]">
+                  <span className="text-lg">🚨</span>
+                  <span className="flex-1 text-xs font-medium truncate">
+                    Alert: <span className="font-semibold">{triggeredAlert.alertName}</span> triggered! AQI in <span className="font-semibold">{triggeredAlert.location}</span> is {triggeredAlert.aqiCondition === "greater" ? ">" : "<"} {triggeredAlert.aqiValue}. Take precautions.
+                  </span>
+                  <button
+                    onClick={() => setDismissedAlertId(triggeredAlert._id)}
+                    className="ml-1 text-white/80 hover:text-white text-base font-bold px-1 py-0 rounded focus:outline-none"
+                    title="Dismiss alert"
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+
+              {/* Show active alerts */}
+              {alertStatus === "loading" ? (
+                <div className="mb-4 p-3 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 rounded-lg text-sm">Loading alerts...</div>
+              ) : alerts && alerts.filter(a => a.status).length > 0 ? (
+                <div className="mb-4 space-y-2">
+                  {alerts.filter(a => a.status).map(alert => (
+                    <div key={alert._id} className="p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg text-red-800 dark:text-red-200 text-sm flex flex-col gap-1">
+                      <div className="font-semibold flex items-center gap-2">
+                        <span>🚨</span>
+                        <span>{alert.alertName}</span>
+                      </div>
+                      <div>Location: <span className="font-medium">{alert.location}</span></div>
+                      <div>Pollutant: <span className="font-medium">{alert.pollutantName}</span></div>
+                      <div>Threshold: <span className="font-medium">AQI {alert.aqiCondition === "greater" ? ">" : "<"} {alert.aqiValue}</span></div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Created: {alert.createdAt ? new Date(alert.createdAt).toLocaleString() : "N/A"}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
 
               <div className="space-y-4">
                 {/* Current AQI Status */}
@@ -1864,16 +1654,3 @@ const UserDashboard = () => {
 };
 
 export default UserDashboard;
-
-// Add this helper function inside the UserDashboard component:
-function getAqiCategoryTooltip(key) {
-  const tooltips = {
-    good: "0–50: Air quality is considered satisfactory, and air pollution poses little or no risk.",
-    moderate: "51–100: Air quality is acceptable; however, there may be a risk for some people, particularly those who are unusually sensitive to air pollution.",
-    unhealthySensitive: "101–150: Members of sensitive groups may experience health effects. The general public is less likely to be affected.",
-    unhealthy: "151–200: Some members of the general public may experience health effects; members of sensitive groups may experience more serious health effects.",
-    veryUnhealthy: "201–300: Health alert: The risk of health effects is increased for everyone.",
-    hazardous: "301–500: Health warning of emergency conditions: everyone is more likely to be affected."
-  };
-  return tooltips[key] || "";
-}

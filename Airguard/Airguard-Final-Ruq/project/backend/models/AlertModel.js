@@ -21,7 +21,7 @@ const AlertSchema = new Schema({
   },
   aqiCondition: {
     type: String,
-    enum: ["greater", "less"],
+    enum: ["greater"],
     required: true,
   },
   aqiValue: {
@@ -33,21 +33,6 @@ const AlertSchema = new Schema({
   status: {
     type: Boolean,
     default: true,
-  },
-  // New fields for generic admin alerts
-  type: {
-    type: String,
-    enum: ["aqi", "report"],
-    default: "aqi",
-  },
-  message: {
-    type: String,
-    default: "",
-  },
-  reportId: {
-    type: Schema.Types.ObjectId,
-    ref: "PollutionReport",
-    default: null,
   },
   createdAt: {
     type: Date,

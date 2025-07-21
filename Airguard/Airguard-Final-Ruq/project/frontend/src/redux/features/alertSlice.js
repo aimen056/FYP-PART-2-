@@ -25,7 +25,7 @@ export const updateAlert = createAsyncThunk(
   "alerts/updateAlert",
   async ({ id, ...alertData }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`/auth/alerts/${id}`, alertData);
+      const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/auth/alerts/${id}`, alertData);
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -37,7 +37,7 @@ export const updateAlert = createAsyncThunk(
 export const deleteAlert = createAsyncThunk(
   "alerts/deleteAlert",
   async (id) => {
-    await axios.delete(`/auth/alerts/${id}`);
+    await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/auth/alerts/${id}`);
     console.log("Deleted Alert ID:", id);  // Debugging log
 
     return id;
@@ -48,7 +48,7 @@ export const deleteAlert = createAsyncThunk(
 export const toggleAlertStatus = createAsyncThunk(
   "alerts/toggleAlertStatus",
   async (id) => {
-    const response = await axios.patch(`/auth/alerts/${id}/toggle-status`);
+    const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/auth/alerts/${id}/toggle-status`);
     return response.data;
   }
 );

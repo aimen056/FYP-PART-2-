@@ -564,7 +564,7 @@ const HomePage = () => {
                   <img src={DropletIcon} alt="Droplet" className="mr-2 h-5 w-5 animate-pulse" />
                   {t("weather.humidity")}
                 </h3>
-                <p className="text-lg font-bold text-gray-900 dark:text-gray-100">N/A</p>
+                <p className="text-lg font-bold text-gray-900 dark:text-gray-100">90%</p>
               </motion.div>
               <motion.div
                 variants={fadeIn}
@@ -575,7 +575,7 @@ const HomePage = () => {
                   <img src={SpeedometerIcon} alt="Speedometer" className="mr-2 h-5 w-5 animate-pulse" />
                   {t("weather.pressure")}
                 </h3>
-                <p className="text-lg font-bold text-gray-900 dark:text-gray-100">N/A</p>
+                <p className="text-lg font-bold text-gray-900 dark:text-gray-100">1001mbar</p>
               </motion.div>
               <motion.div
                 variants={fadeIn}
@@ -586,7 +586,7 @@ const HomePage = () => {
                   <img src={ThermometerIcon} alt="Thermometer" className="mr-2 h-5 w-5 animate-pulse" />
                   {t("weather.temperature")}
                 </h3>
-                <p className="text-lg font-bold text-gray-900 dark:text-gray-100">N/A</p>
+                <p className="text-lg font-bold text-gray-900 dark:text-gray-100">25</p>
               </motion.div>
             </motion.div>
 

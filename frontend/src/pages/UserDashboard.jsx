@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchReports } from "../redux/features/repPollutionSlice";
 import { fetchAlerts } from "../redux/features/alertSlice";
 import { NavLink } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { BsSearch, BsCalendarDay, BsCalendarMinus, BsGeoAlt, BsArrowRepeat } from "react-icons/bs";
 import HomeMap from "../components/map/HomeMap";

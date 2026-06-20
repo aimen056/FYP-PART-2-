@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const AirData = require('../models/AirData');
 const { calculateIndex } = require('../utils/calculateAqi');
-const moment = require('moment');
 
 // Enable CORS for this router
 router.use((req, res, next) => {
@@ -136,7 +135,7 @@ router.get('/historical', async (req, res) => {
 
     // Group data by hour (optional, for reducing data points)
     const hourlyData = historicalData.reduce((acc, reading) => {
-      const hour = moment(reading.timestamp).startOf('hour').format();
+      const d = new Date(reading.timestamp); d.setMinutes(0, 0, 0); const hour = d.toISOString();
       if (!acc[hour]) {
         acc[hour] = {
           timestamp: hour,

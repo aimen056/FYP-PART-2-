@@ -73,8 +73,8 @@ const EditProfile = () => {
         } else if (name === "diseases") {
           return {
             ...prev,
-            diseases: checked 
-              ? [...prev.diseases, value] 
+            diseases: checked
+              ? [...prev.diseases, value]
               : prev.diseases.filter((d) => d !== value),
           };
         }
@@ -86,7 +86,7 @@ const EditProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-    
+
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -108,10 +108,9 @@ const EditProfile = () => {
         throw new Error(errorData.error || "Failed to update profile");
       }
 
-      const data = await response.json();
+      await response.json();
       setMessage("Profile updated successfully!");
-      
-      // Update local storage if email or name changed
+
       const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
         localStorage.setItem("user", JSON.stringify({
@@ -137,19 +136,18 @@ const EditProfile = () => {
           <h1 className="text-2xl font-bold">Edit Profile</h1>
           <p className="mt-2">Update your personal information and preferences</p>
         </div>
-        
+
         <div className="p-6">
           {message && (
             <div className={`mb-4 p-3 rounded ${
-              message.includes("success") 
-                ? "bg-green-100 text-green-700" 
+              message.includes("success")
+                ? "bg-green-100 text-green-700"
                 : "bg-red-100 text-red-700"
             }`}>
               {message}
             </div>
           )}
-          
-             
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -163,7 +161,7 @@ const EditProfile = () => {
                   required
                 />
               </div>
-              
+
               <div>
                 <label className="block text-gray-700 mb-1">Email</label>
                 <input
@@ -175,7 +173,7 @@ const EditProfile = () => {
                   required
                 />
               </div>
-              
+
               <div>
                 <label className="block text-gray-700 mb-1">Contact Number</label>
                 <input
@@ -186,7 +184,7 @@ const EditProfile = () => {
                   className="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-orange-400"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-gray-700 mb-1">Date of Birth</label>
                 <input
@@ -197,7 +195,7 @@ const EditProfile = () => {
                   className="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-orange-400"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-gray-700 mb-1">Country</label>
                 <select
@@ -211,7 +209,7 @@ const EditProfile = () => {
                   <option value="UK">UK</option>
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-gray-700 mb-1">City</label>
                 <input
@@ -223,7 +221,7 @@ const EditProfile = () => {
                 />
               </div>
             </div>
-            
+
             <div className="pt-4 border-t border-gray-200">
               <label className="flex items-center space-x-2">
                 <input
@@ -235,7 +233,7 @@ const EditProfile = () => {
                 />
                 <span className="text-gray-700">I want to receive alerts</span>
               </label>
-              
+
               {formData.wantsAlerts && (
                 <div className="mt-4 space-y-4 pl-6">
                   <div>
@@ -257,7 +255,7 @@ const EditProfile = () => {
                 </div>
               )}
             </div>
-            
+
             <div className="flex justify-end space-x-4 pt-6">
               <button
                 type="button"

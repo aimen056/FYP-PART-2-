@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
-// Animation variants
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
@@ -47,9 +46,9 @@ const FAQItem = ({ question, answer }) => {
       </button>
       <motion.div
         initial={{ height: 0, opacity: 0 }}
-        animate={{ 
-          height: isOpen ? "auto" : 0, 
-          opacity: isOpen ? 1 : 0 
+        animate={{
+          height: isOpen ? "auto" : 0,
+          opacity: isOpen ? 1 : 0
         }}
         transition={{ duration: 0.3 }}
         className="overflow-hidden"

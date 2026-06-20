@@ -673,7 +673,7 @@ const UserDashboard = () => {
   return (
     <ErrorBoundary>
       <motion.div
-        className="pt-16 min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-purple-900 dark:to-slate-900 text-gray-800 dark:text-white"
+        className="pt-16 pb-14 md:pb-0 min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-purple-900 dark:to-slate-900 text-gray-800 dark:text-white"
         initial="hidden"
         animate="visible"
         variants={staggerContainer}

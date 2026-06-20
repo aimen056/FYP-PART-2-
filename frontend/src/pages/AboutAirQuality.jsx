@@ -89,9 +89,11 @@ const AnimatedSection = ({ children, variants, className }) => {
   );
 };
 
+const pageVariants = { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } } };
+
 const AirQualityInfo = () => {
   return (
-    <div className="min-h-screen bg-white text-gray-800 py-16 px-5 relative overflow-hidden">
+    <motion.div variants={pageVariants} initial="initial" animate="animate" className="min-h-screen bg-white text-gray-800 py-16 px-5 relative overflow-hidden">
       {/* Subtle Background Pattern */}
       <div className="absolute inset-0 opacity-10 animate-float">
         <img
@@ -399,7 +401,7 @@ const AirQualityInfo = () => {
           transition={{ type: "spring", stiffness: 300 }}
         />
       </AnimatedSection>
-    </div>
+    </motion.div>
   );
 };
 

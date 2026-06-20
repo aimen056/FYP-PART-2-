@@ -87,6 +87,7 @@ const UserNavBar = () => {
   ];
 
   return (
+    <>
     <nav className="bg-navBarbg dark:bg-navBarbg text-primaryText backdrop-blur-md dark:text-primaryText flex fixed top-0 left-0 w-full justify-between p-px border-gray-400/35 border-b-[1px] h-16 font-semibold z-20">
       {/* Logo Section */}
       <div className="flex items-center justify-center rounded-3xl w-1/2 md:w-1/6 p-2 font-bold gap-2">
@@ -229,18 +230,35 @@ const UserNavBar = () => {
           )}
         </div>
 
-        {/* Mobile Menu Toggle */}
-        <button
-          ref={hamburgerRef}
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden focus:outline-none dark:text-primaryText/60"
-          aria-controls="navbar-sticky"
-          aria-expanded={isMenuOpen ? "true" : "false"}
-        >
-          <BsList className="h-6 w-6" />
-        </button>
-      </div>
+        </div>
     </nav>
+
+    {/* Mobile bottom nav */}
+    <nav className="md:hidden fixed bottom-0 left-0 w-full z-30 bg-navBarbg dark:bg-navBarbg border-t border-gray-200 dark:border-gray-700 flex justify-around items-center h-14">
+      {navLinks.map(({ to, icon, label }) => (
+        <NavLink
+          key={to}
+          to={to}
+          onClick={() => handleChangeTab(to)}
+          className={`flex flex-col items-center gap-0.5 text-xs px-2 py-1 transition-colors ${
+            selectedTab === to
+              ? "text-sky-500 font-semibold"
+              : "text-slate-500 dark:text-slate-400"
+          }`}
+        >
+          <span className="text-lg">{icon}</span>
+          <span>{label}</span>
+        </NavLink>
+      ))}
+      <button
+        onClick={() => navigate("/edit-profile")}
+        className="flex flex-col items-center gap-0.5 text-xs px-2 py-1 text-slate-500 dark:text-slate-400"
+      >
+        <BsPersonCircle className="text-lg" />
+        <span>Profile</span>
+      </button>
+    </nav>
+    </>
   );
 };
 

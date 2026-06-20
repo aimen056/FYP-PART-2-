@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import { useTranslation } from "react-i18next";
@@ -147,8 +148,9 @@ const HistoricalReport = () => {
     fetchHistoricalData();
   }, [timeRange, selectedZone]);
 
+  const pageVariants = { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } } };
   return (
-    <div className="pt-16 bg-gray-50 dark:bg-gray-900 min-h-screen p-6">
+    <motion.div variants={pageVariants} initial="initial" animate="animate" className="pt-16 bg-gray-50 dark:bg-gray-900 min-h-screen p-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
@@ -330,7 +332,7 @@ const HistoricalReport = () => {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

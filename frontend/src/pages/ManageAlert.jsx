@@ -35,8 +35,9 @@ const ManageAlert = () => {
     setModalOpen(true);
   };
 
+  const pageVariants = { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } } };
   return (
-    <div>
+    <motion.div variants={pageVariants} initial="initial" animate="animate">
       <div className="pt-16 bg-background dark:bg-background dark:text-[#E4E4E7] h-screen">
         <div>
           <div className="bg-surfaceColor p-2 m-2">
@@ -189,7 +190,7 @@ const ManageAlert = () => {
           alertData={selectedAlert}
         />
       )}
-    </div>
+    </motion.div>
   );
 };
 

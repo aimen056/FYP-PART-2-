@@ -20,6 +20,13 @@ const Navbar = () => {
   const [dark, setDark] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState("");
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const menuRef = useRef();
   const hamburgerRef = useRef();
 
@@ -74,7 +81,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-navBarbg dark:bg-navBarbg text-primaryText backdrop-blur-md dark:text-primaryText flex fixed top-0 left-0 w-full justify-between p-px border-gray-400/35 border-b-[1px] h-16 font-semibold z-20">
+    <nav className={`text-primaryText flex fixed top-0 left-0 w-full justify-between p-px border-b-[1px] h-16 font-semibold z-20 transition-all duration-300 ${scrolled ? "bg-navBarbg dark:bg-navBarbg border-gray-400/35 backdrop-blur-md shadow-sm" : "bg-transparent border-transparent"}`}>
       {/* Logo Section */}
       <div className="flex items-center justify-center rounded-3xl w-1/2 md:w-1/6 p-2 font-bold gap-2">
         <img className="object-scale-down h-10" src={logo} alt="Logo" />

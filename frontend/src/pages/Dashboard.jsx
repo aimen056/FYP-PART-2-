@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import HomeMap from "../components/map/HomeMap";
@@ -266,8 +267,9 @@ const AdminDashboard = () => {
   const highestAQI = sensorLocations.reduce((max, loc) => Math.max(max, loc.aqi || 0), 0);
   const highestAqiCategory = getAqiCategory(highestAQI);
 
+  const pageVariants = { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } } };
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 pt-16">
+    <motion.div variants={pageVariants} initial="initial" animate="animate" className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 pt-16">
       <header className="bg-white dark:bg-gray-800 py-4 border-b border-gray-200 dark:border-gray-700">
         <div className="w-full px-4">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between">
@@ -774,7 +776,7 @@ const AdminDashboard = () => {
             </div>
           </div>
         )}
-    </div>
+    </motion.div>
   );
 };
 

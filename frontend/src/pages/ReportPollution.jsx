@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -335,8 +336,9 @@ const ReportPollution = ({ isOpen, onClose, initialReportData, onReportSubmit, o
     }
   };
 
+  const pageVariants = { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } } };
   return (
-    <div className={`pt-16 bg-background dark:bg-background dark:text-[#E4E4E7] min-h-screen ${isOpen ? 'fixed inset-0 z-50 overflow-y-auto' : ''}`}>
+    <motion.div variants={pageVariants} initial="initial" animate="animate" className={`pt-16 bg-background dark:bg-background dark:text-[#E4E4E7] min-h-screen ${isOpen ? 'fixed inset-0 z-50 overflow-y-auto' : ''}`}>
       {isOpen ? (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -795,7 +797,7 @@ const ReportPollution = ({ isOpen, onClose, initialReportData, onReportSubmit, o
       </div>
         </>
       )}
-    </div>
+    </motion.div>
   );
 };
 

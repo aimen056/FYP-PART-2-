@@ -9,9 +9,10 @@ const ParticleCanvas = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Check WebGL support
-    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-    if (!gl) return; // Falls back to CSS gradient (canvas stays hidden)
+    // Check WebGL support without acquiring context (use offscreen check)
+    const testCanvas = document.createElement("canvas");
+    const gl = testCanvas.getContext("webgl") || testCanvas.getContext("experimental-webgl");
+    if (!gl) return;
 
     let Three;
     import("three").then((module) => {
@@ -22,7 +23,12 @@ const ParticleCanvas = () => {
       const camera = new PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
       camera.position.z = 5;
 
-      const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: false });
+      let renderer;
+      try {
+        renderer = new WebGLRenderer({ canvas, alpha: true, antialias: false });
+      } catch {
+        return;
+      }
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setSize(canvas.clientWidth, canvas.clientHeight);
       rendererRef.current = renderer;
